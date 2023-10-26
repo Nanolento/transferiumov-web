@@ -20,3 +20,8 @@ header {
     color: #999;
     font-size: 0.5em;
 }
+
+#output {
+    width: 50em;
+    height: 10em;
+}
