@@ -165,7 +165,7 @@ function populateTrips() {
                 break;
         }
         stopHeader += " " + stopInfo.name;
-        $("#tl_header").text(stopHeader);
+        $("#tl_head").text(stopHeader);
         return new Promise(function(resolve, reject) {
             $.ajax({
                 url: apiDomain + "get_child_stops",
