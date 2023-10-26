@@ -13,15 +13,35 @@ header {
     margin: 2em;
     padding: 1em;
     background-color: #eee;
-    font-size: 1.5em;
 }
 
 #disclaimer {
     color: #999;
-    font-size: 0.5em;
+    font-size: 0.8em;
 }
 
-#output {
-    width: 50em;
-    height: 10em;
+#searchResults {
+    margin: 1em 0;
+}
+
+.searchResult {
+    padding: 1em;
+    background-color: #fff;
+    color: black;
+}
+
+.searchResult > p {
+    margin: 0;
+    color: #666;
+}
+
+.searchResult > a {
+    color: black;
+    margin: 0;
+    text-decoration: none;
+}
+
+.searchResult > a:visited {
+    color: black;
+    text-decoration: none;
 }
