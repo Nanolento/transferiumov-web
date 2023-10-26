@@ -1,0 +1,23 @@
+body {
+    font-family: "Inter", "Segoe UI", "Arial", sans-serif;
+    margin: 0;
+    background-color: #ddd;
+}
+
+header {
+    padding: 0.2em 2em;
+    background-color: #cfc;
+}
+
+#content {
+    margin: 2em;
+    padding: 1em;
+    background-color: #eee;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+#disclaimer {
+    color: #999;
+    font-size: 0.5em;
+}
