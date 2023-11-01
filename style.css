@@ -30,6 +30,7 @@ header {
     color: black;
 }
 
+
 .searchResult > p {
     margin: 0;
     color: #666;
@@ -52,4 +53,32 @@ header {
 
 .res_odd {
     background-color: #f2f2f2;
+}
+
+#betaHeader {
+    color: orange;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.tl_top {
+    display: flex;
+    justify-content: left;
+}
+
+.tl_shortname {
+    padding: 0.7em;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.tl_deptime {
+    margin: auto 1em;
+}
+
+.tl_destname {
+    margin: auto 1em;
+    text-decoration: none;
+    color: inherit;
 }

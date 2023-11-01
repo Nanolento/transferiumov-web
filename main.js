@@ -2,6 +2,47 @@ var siteDomain = "http://localhost:8080/";
 var apiDomain = "http://localhost:8000/";
 
 
+const agencyNiceNames = {
+    "IFF:EB": "Eurobahn",
+    "IFF:VALLEI": "Valleilijn",
+    "HTM": "HTM",
+    "BRENG": "Breng",
+    "KEOLIS": "Keolis",
+    "TEXELHOPPER": "Texelhopper",
+    "ALLGO": "allGo (Keolis)",
+    "IFF:NSI": "NS International",
+    "FF": "Westerschelde Ferry",
+    "BRAVO:ARR": "Bravo (Arriva)",
+    "SYNTUS:UT": "Syntus Utrecht",
+    "BLUEAMIGO": "Blue Amigo",
+    "TRANSDEV": "Transdev",
+    "HERMES": "Hermes",
+    "IFF:ES": "EU Sleeper",
+    "IFF:RET": "RET",
+    "TWENTS": "Twents (Keolis)",
+    "IFF:ARRIVA": "Arriva",
+    "BRAVO:CXX": "Bravo (Hermes)",
+    "IFF:DB": "Deutsche Bahn",
+    "OVREGIOY": "OV Regio IJsselmond",
+    "CXX": "Connexxion",
+    "UOV": "U-OV",
+    "QBUZZ": "Qbuzz",
+    "IFF:BN": "Blauwnet",
+    "ARR": "Arriva",
+    "IFF:VIAS": "VIAS",
+    "EBS": "EBS",
+    "IFF:RNET": "R-net",
+    "IFF:NS": "NS",
+    "IFF:NMBS": "NMBS",
+    "OVERAL": "Overal (Connexxion)",
+    "GVB": "GVB",
+    "DELIJN": "De Lijn",
+    "NIAG": "NIAG",
+    "RET": "RET",
+    "IFF:BRENG": "Breng"
+};
+
+
 function jsonToStopList(j) {
     $("#searchResults").html(j.length.toString() + " zoekresultaten");
     for (let i = 0; i < j.length; i++) {
@@ -36,90 +77,68 @@ function jsonToStopList(j) {
 
 function addStopTimeToTripList(st) {
     let tripElem = document.createElement("div");
-    
+    let tripTopBox = document.createElement("div");
+    let tripBottomBox = document.createElement("div");
     let destName = document.createElement("a");
     destName.href = "https://google.com";
     // headsign
     if ("stop_headsign" in st && st.stop_headsign != "") {
         $(destName).text(st.stop_headsign);
+    } else {
+        $(destName).text(st.trip.headsign);
     }
     let agencyElem = document.createElement("p");
     let shortName = document.createElement("p");
-    var infoRequest = new Promise(function(resolve, reject) {
-        $.ajax({
-            url: apiDomain + "trip_info",
-            type: "get",
-            data: { tid: st.trip_id },
-            dataType: "json",
-            success: function(response) {
-                resolve(response);
-                
-            }
+    $(agencyElem).text(agencyNiceNames[st.route.agency]);
+    $(shortName).text(st.route.short_name);
+    // departure time
+    let depTime = document.createElement("p");
+    $(depTime).text(st.depart_time);
+    
+    // distance
+    let distElem = document.createElement("p");
+    $(distElem).text((st.distance / 1000).toFixed(1) + " km");
+    
+    $(shortName).addClass("tl_shortname");
+    $(destName).addClass("tl_destname");
+    $(distElem).addClass("tl_distelem");
+    $(agencyElem).addClass("tl_agency");
+    $(depTime).addClass("tl_deptime");
+    $(tripTopBox).addClass("tl_top");
+    $(tripBottomBox).addClass("tl_bottom");
+    if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL") {
+        $(tripTopBox).css({
+            "color": "#" + st.route.fgcolor,
+            "background-color": "#" + st.route.bgcolor + "99"
         });
-    });
-    infoRequest.then(function(response) {
-        if ($(destName).text() == "") {
-            $(destName).text(response.headsign);
-        }
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: apiDomain + "route_info",
-                type: "get",
-                data: { rid: response.route_id },
-                dataType: "json",
-                success: function(response) {
-                    //console.log(response);
-                    resolve(response);
-                }
-            });
+        $(shortName).css({
+            "background-color": "#" + st.route.bgcolor
         });
-    }).then(function(response) {
-        $(agencyElem).text(response.agency);
-        $(shortName).text(response.short_name);
-        // departure time
-        let depTime = document.createElement("p");
-        $(depTime).text(st.depart_time);
-        
-        // distance
-        let distElem = document.createElement("p");
-        $(distElem).text((st.distance / 1000).toFixed(1) + " km");
-        
-        $(shortName).addClass("tl_shortname");
-        $(destName).addClass("tl_destname");
-        $(distElem).addClass("tl_distelem");
-        $(agencyElem).addClass("tl_agency");
-        $(depTime).addClass("tl_deptime");
-        
-        // append elems
-        $(tripElem).append(depTime);
-        $(tripElem).append(shortName);
-        $(tripElem).append(destName);
-        $(tripElem).append(distElem);
-        $(tripElem).append(agencyElem);
-        
-        $(tripElem).addClass("searchResult");
-        
-        $("#tripList").append(tripElem);
-    });
+    } else {
+        $(tripTopBox).css({
+            "background-color": "#dddddd40"
+        });
+        $(shortName).css({
+            "background-color": "#dddddd64"
+        });
+    }
+    
+    // append elems
+    $(tripTopBox).append(depTime);
+    $(tripTopBox).append(shortName);
+    $(tripTopBox).append(destName);
+    $(tripBottomBox).append(distElem);
+    $(tripBottomBox).append(agencyElem);
+    
+    $(tripElem).append(tripTopBox);
+    $(tripElem).append(tripBottomBox);
+    $(tripElem).addClass("searchResult");
+    if (($("#tripList").children().length - 1) % 2 == 1){
+        $(tripElem).addClass("res_odd");
+    }
+    $("#tripList").append(tripElem);
+    
 }
-
-
-function sortTripList() {
-    let trips = $("#tripList").children();
-    let tripArray = Array.from(trips);
-    tripArray.sort(function (a, b) {
-        if (a.classList.contains("tl_header") || b.classList.contains("tl_header")) {
-            return false;
-        }
-        let timA = a.querySelector(".tl_deptime").textContent;
-        let timB = b.querySelector(".tl_deptime").textContent;
-        return timA.localeCompare(timB);
-    });
-    tripArray.forEach(function (element) {
-        $("#tripList").append(element);
-    });
-}
-
 
 function populateTrips() {
     if (window.location.href.includes("stop.htm") == false) {
@@ -181,6 +200,7 @@ function populateTrips() {
             });
         });
     }).then(function(response) {
+        
         if (response.length == 0) {
             // get stop trips
             // no child stops
@@ -252,5 +272,6 @@ $(function() {
             performSearch();
         }
     });
+    $("#betaHeader").text("alpha v0.0.8");
     populateTrips();
 });
