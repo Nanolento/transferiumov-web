@@ -1,5 +1,5 @@
-var siteDomain = "http://localhost:8080/";
-var apiDomain = "http://localhost:8000/";
+var siteDomain = "http://192.168.178.227:8080/";
+var apiDomain = "http://192.168.178.227:8000/";
 
 
 const agencyNiceNames = {
@@ -76,6 +76,9 @@ function jsonToStopList(j) {
 
 
 function addStopTimesToTripList(stopTimes) {
+    let countElem = document.createElement("p");
+    $(countElem).text(stopTimes.length.toString() + " ritten vandaag");
+    $("#tripList").append(countElem);
     stopTimes.forEach(st => {
         let tripElem = document.createElement("div");
         let tripTopBox = document.createElement("div");
@@ -146,12 +149,36 @@ function addStopTimesToTripList(stopTimes) {
         $(tripBottomBox).append(distElem);
         $(tripBottomBox).append(agencyElem);
         
+        // realtime placeholder
+        let rtSep = document.createElement("p");
+        $(rtSep).text("|");
+        let realtimeBox = document.createElement("div");
+        $(realtimeBox).css({
+            "color": "#aaa",
+            "font-style": "italic"
+        });
+        $(realtimeBox).text("Geen realtime-informatie beschikbaar");
+        $(tripBottomBox).append(rtSep);
+        $(realtimeBox).addClass("tl_rtbox");
+        $(rtSep).addClass("tl_rtbox");
+        $(tripBottomBox).append(realtimeBox);
+        
         $(tripElem).append(tripTopBox);
         $(tripElem).append(tripBottomBox);
         $(tripElem).addClass("searchResult");
         $("#tripList").append(tripElem);
     });
-    $("#loadingIcon").remove();
+    $("#loading").remove();
+}
+
+
+function createTimeOut(ms, message) {
+    let timedOutPromise = new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            reject(new Error(message));
+        }, ms);
+    });
+    return timedOutPromise;
 }
 
 
@@ -166,7 +193,10 @@ function populateTrips() {
     
     let stopId = parseInt(stopIdParam);
     if (isNaN(stopId)) {
-        $("#tl_header").text("Helaas, er is iets misgegaan!");
+        $("#tl_head").css({
+            "background-color": "#f5948c"
+        });
+        $("#tl_head").text("Laden van halteinformatie mislukt.");
         return
     }
     var stopInfoRequest = new Promise(function(resolve, reject) {
@@ -178,7 +208,7 @@ function populateTrips() {
                 resolve(response);
             },
             error: function(response) {
-                reject("Helaas, er is iets misgegaan!");
+                reject(new Error(`Laden van halteinformatie mislukt.`));
             }
         });
     });
@@ -208,7 +238,7 @@ function populateTrips() {
                     resolve(response);
                 },
                 error: function(req) {
-                    reject("Helaas, er is iets misgegaan!");
+                    reject(new Error(`Laden van bijbehorende haltes is mislukt.`));
                 }
             });
         });
@@ -229,7 +259,7 @@ function populateTrips() {
         }
         let promises = [];
         for (let i = 0; i < stops.length; i++) {
-            promises.push(new Promise(function(resolve, reject) {
+            let getPromise = new Promise(function(resolve, reject) {
                 $.ajax({
                     url: apiDomain + "stop_trip_times",
                     type: "get",
@@ -239,10 +269,14 @@ function populateTrips() {
                         resolve(response);
                     },
                     error: function(req) {
-                        reject(new Error(`Failed to load stop trip times for stop ${stops[i].stopId}`));
+                        reject(new Error(`Laden van rittijden voor halte ${stops[i].stopId} mislukt.`));
                     }
                 });
-            }));
+            });
+            
+            let timedOutPromise = createTimeOut(45000, `Tijdens het laden van rittijden voor halte ${stops[i].stopId} deed ` +
+                                                       `de server er te lang over om te reageren.`);
+            promises.push(Promise.race([getPromise, timedOutPromise]));
         }
         Promise.allSettled(promises).then(ffPromises => {
             let stopTimes = [];
@@ -263,7 +297,7 @@ function populateTrips() {
                     stopTimes = stopTimes.concat(localStopTimes);
                 } else {
                     let warning = document.createElement("p");
-                    $(warning).text("Helaas konden we niet alle ritten vinden die bij deze halte stoppen!");
+                    $(warning).text(ffPromises[i].reason.message);
                     $(warning).css({
                         "background-color": "#f5948c",
                         "color": "black",
@@ -281,7 +315,6 @@ function populateTrips() {
             });
             // now we can create elements.
             // we can use nearly identical code to the previous attempt.
-            console.log(stopTimes);
             addStopTimesToTripList(stopTimes);
         });
     });
@@ -294,30 +327,66 @@ function performSearch() {
         return;
     }
     let sQuery = $("#query").val()
-    $.ajax({
-        url: apiDomain + "search_stop",
-        type: "get",
-        data: { query: sQuery },
-        dataType: "json",
-        success: function(response) {
-            jsonToStopList(response);
-        },
-        error: function (req) {
-            alert("Helaas, er is iets misgegaan!");
-        }
+    let searchPromise = new Promise(function(resolve, reject) {
+        $.ajax({
+            url: apiDomain + "search_stop",
+            type: "get",
+            data: { query: sQuery },
+            dataType: "json",
+            success: function(response) {
+                resolve(response);
+            },
+            error: function (req) {
+                reject(new Error(`Laden van zoekresultaten is mislukt.`));
+            }
+        });
+    });
+    let timedOutPromise = createTimeOut(10000, `Laden van zoekresultaten duurde te lang.`);
+    // create loading spinner for searching
+    let loadingIcon = document.createElement("img");
+    $(loadingIcon).attr("id", "loading");
+    $(loadingIcon).attr({
+        "src": "loading.png",
+        "width": "16",
+        "height": "16"
+    });
+    $(loadingIcon).addClass("rotate");
+    $("#searchResults").html("");
+    $(loadingIcon).insertAfter("#searchBtn");
+    Promise.race([searchPromise, timedOutPromise]).then(function(response) {
+        jsonToStopList(response);
+        $("#loading").remove();
+    }).catch(function(error) {
+        let warning = document.createElement("p");
+        $(warning).text(error);
+        $(warning).css({
+            "background-color": "#f5948c",
+            "color": "black",
+            "font-weight": "bold"
+        });
+        $("#searchResults").append(warning);
+        $("#loading").remove();
     });
 }
 
 
 $(function() {
     $("#searchBtn").click(function() {
-        performSearch();
-    });
-    $("#query").keyup(function(event) {
-        if (event.key === "Enter") {
+        if ($("#query").val().length >= 3) {
             performSearch();
         }
     });
-    $("#betaHeader").text("alpha v0.0.11");
+    $("#query").keyup(function(event) {
+        if ($("#query").val().length < 3) {
+            $("#searchBtn").prop("disabled", true);
+        } else {
+            $("#searchBtn").prop("disabled", false);
+        }
+        if (event.key === "Enter" && $("#query").val().length >= 3) {
+            performSearch();
+        }
+        
+    });
+    $("#betaHeader").text("alpha v0.0.12");
     populateTrips();
 });

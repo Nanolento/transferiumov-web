@@ -9,10 +9,24 @@ header {
     background-color: #cfc;
 }
 
-#content {
-    margin: 2em;
-    padding: 1em;
-    background-color: #eee;
+@media screen and (min-width: 500px) {
+    #content {
+        padding: 1em;
+        background-color: #eee;
+        width: 50em;
+        margin: 2em auto;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #content {
+        padding: 1em;
+        background-color: #eee;
+        margin: 2em auto;
+    }
+    .tl_rtbox {
+        display: none;
+    }
 }
 
 #disclaimer {
@@ -32,6 +46,18 @@ header {
     margin: 0.5em;
 }
 
+#tripList {
+    height: 80vh;
+    overflow: auto;
+}
+
+#tl_head {
+    text-align: center;
+}
+
+#loading {
+    text-align: center;
+}
 
 .searchResult > p {
     margin: 0;
@@ -73,9 +99,13 @@ header {
     margin: 0 1em 0 0.2em;
 }
 
+.tl_bottom {
+    padding: 0.2em 0;
+}
+
 .tl_shortname {
     padding: 0.7em;
-    margin: 0;
+    margin: auto 0;
     font-size: 1.1em;
     font-weight: bold;
     width: 2em;
