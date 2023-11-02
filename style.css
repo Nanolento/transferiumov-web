@@ -59,6 +59,13 @@ header {
     text-align: center;
 }
 
+.warning {
+    background-color: #f5948c;
+    color: black;
+    font-weight: bold;
+    padding: 0.5em;
+}
+
 .searchResult > p {
     margin: 0;
     color: #666;

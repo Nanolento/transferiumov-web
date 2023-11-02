@@ -299,11 +299,7 @@ function populateTrips() {
                 } else {
                     let warning = document.createElement("p");
                     $(warning).text(ffPromises[i].reason.message);
-                    $(warning).css({
-                        "background-color": "#f5948c",
-                        "color": "black",
-                        "font-weight": "bold"
-                    });
+                    $(warning).addClass("warning");
                     $("#tripList").append(warning);
                 }
             }
@@ -319,9 +315,7 @@ function populateTrips() {
             addStopTimesToTripList(stopTimes);
         });
     }).catch(function(error) {
-        $("#tl_head").css({
-            "background-color": "#f5948c"
-        });
+        $("#tl_head").addClass("warning");
         $("#tl_head").text(error);
         $("#loading").remove();
     });
@@ -366,11 +360,7 @@ function performSearch() {
     }).catch(function(error) {
         let warning = document.createElement("p");
         $(warning).text(error);
-        $(warning).css({
-            "background-color": "#f5948c",
-            "color": "black",
-            "font-weight": "bold"
-        });
+        $(warning).addClass("warning");
         $("#searchResults").append(warning);
         $("#loading").remove();
     });
@@ -394,6 +384,6 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("alpha v0.0.13");
+    $("#betaHeader").text("alpha v0.0.14");
     populateTrips();
 });
