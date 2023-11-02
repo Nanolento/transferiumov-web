@@ -169,6 +169,28 @@ function addStopTimesToTripList(stopTimes) {
         $("#tripList").append(tripElem);
     });
     $("#loading").remove();
+    // scroll to current time
+    // get element to scroll to
+    let currentHour = new Date().getHours();
+    let hourOffset = 0; 
+    while ($(".tl_currenttime").length == 0) {
+        // 30 instead of 24 because GTFS times can go over 24 hours.
+        let hour = ((currentHour + hourOffset) % 30).toString().padStart(2, '0')
+        $("#tripList").children().each(function(){
+            if ($(this).children().first().text().startsWith(hour)) {
+                $(this).addClass("tl_currenttime");
+                return false;
+            }
+        });
+        hourOffset += 1;
+        if (hourOffset > 30) {
+            break;
+        }
+    }
+    // now scroll there
+    if ($(".tl_currenttime").length != 0) {
+        $("#tripList").scrollTop($(".tl_currenttime").position().top + $("#tripList").scrollTop() - $("#tripList").offset().top);
+    }
 }
 
 
@@ -383,6 +405,6 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("alpha v0.0.15");
+    $("#betaHeader").text("alpha v0.0.17");
     populateTrips();
 });
