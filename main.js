@@ -229,6 +229,14 @@ function populateTrips() {
         }
         stopHeader += " " + stopInfo.name;
         $("#tl_head").text(stopHeader);
+        if (stopInfo.parent_station != 0) {
+            location.replace("/stop.htm?sid=" + stopInfo.parent_station.toString());
+            return new Promise(function(resolve, reject) {
+                // this is not a real error, but just to avoid
+                // the "TypeError" that comes up when redirecting.
+                reject(new Error(`Laden...`));
+            });
+        }
         return new Promise(function(resolve, reject) {
             $.ajax({
                 url: apiDomain + "get_child_stops",
@@ -315,8 +323,11 @@ function populateTrips() {
             addStopTimesToTripList(stopTimes);
         });
     }).catch(function(error) {
-        $("#tl_head").addClass("warning");
-        $("#tl_head").text(error);
+        if (error.message != "Laden...") {
+            // avoid a red flash on screen when redirecting.
+            $("#tl_head").addClass("warning");
+        }
+        $("#tl_head").text(error.message);
         $("#loading").remove();
     });
 }
@@ -359,7 +370,7 @@ function performSearch() {
         $("#loading").remove();
     }).catch(function(error) {
         let warning = document.createElement("p");
-        $(warning).text(error);
+        $(warning).text(error.message);
         $(warning).addClass("warning");
         $("#searchResults").append(warning);
         $("#loading").remove();
@@ -384,6 +395,6 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("alpha v0.0.14");
+    $("#betaHeader").text("alpha v0.0.15");
     populateTrips();
 });
