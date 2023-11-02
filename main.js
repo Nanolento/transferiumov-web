@@ -87,6 +87,7 @@ function addStopTimeToTripList(st) {
     } else {
         $(destName).text(st.trip.headsign);
     }
+
     let agencyElem = document.createElement("p");
     let shortName = document.createElement("p");
     $(agencyElem).text(agencyNiceNames[st.route.agency]);
@@ -99,14 +100,14 @@ function addStopTimeToTripList(st) {
     let distElem = document.createElement("p");
     $(distElem).text((st.distance / 1000).toFixed(1) + " km");
     
-    $(shortName).addClass("tl_shortname");
+    
     $(destName).addClass("tl_destname");
     $(distElem).addClass("tl_distelem");
     $(agencyElem).addClass("tl_agency");
     $(depTime).addClass("tl_deptime");
     $(tripTopBox).addClass("tl_top");
     $(tripBottomBox).addClass("tl_bottom");
-    if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL") {
+    if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL" && st.route.type != "train") {
         $(tripTopBox).css({
             "color": "#" + st.route.fgcolor,
             "background-color": "#" + st.route.bgcolor + "99"
@@ -114,26 +115,57 @@ function addStopTimeToTripList(st) {
         $(shortName).css({
             "background-color": "#" + st.route.bgcolor
         });
-    } else {
+    } else if (st.route.type != "train") {
         $(tripTopBox).css({
             "background-color": "#dddddd40"
         });
         $(shortName).css({
             "background-color": "#dddddd64"
         });
+    } else {
+        $(tripTopBox).css({
+            "background-color": "#dddddd40"
+        });
+        $(destName).css({
+            "margin": "1em 1em"
+        });
     }
     
     // append elems
     $(tripTopBox).append(depTime);
-    $(tripTopBox).append(shortName);
+    if (st.route.type == "train") {
+        $(shortName).addClass("tl_trainname");
+        $(tripBottomBox).append(shortName);
+    } else {
+        $(shortName).addClass("tl_shortname");
+        $(tripTopBox).append(shortName);
+    }
     $(tripTopBox).append(destName);
+    
     $(tripBottomBox).append(distElem);
     $(tripBottomBox).append(agencyElem);
     
     $(tripElem).append(tripTopBox);
     $(tripElem).append(tripBottomBox);
     $(tripElem).addClass("searchResult");
-    $("#tripList").append(tripElem);
+    
+    // place elem at correct position.
+    if ($("#tripList").children(".searchResult").length > 0) {
+        $("#tripList").children(".searchResult").each(function() {
+            let compareStringA = $(this).children(".tl_top").children().first().first().text();
+            let compareStringB = $(depTime).text();
+            let compareIntA = parseInt(compareStringA.substring(0,2)) * 60 + parseInt(compareStringA.substring(3,5));
+            let compareIntB = parseInt(compareStringB.substring(0,2)) * 60 + parseInt(compareStringB.substring(3,5));
+            console.log(compareStringA, compareStringB, compareIntA, compareIntB);
+            if (compareIntB < compareIntA) {
+                $(tripElem).insertBefore($(this));
+            } else if (compareIntB > compareIntA) {
+                $(tripElem).insertAfter($(this));
+            }
+        });
+    } else {
+        $("#tripList").append(tripElem);
+    }
     $("#loadingIcon").remove();
 }
 
