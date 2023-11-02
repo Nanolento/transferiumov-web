@@ -197,6 +197,7 @@ function populateTrips() {
             "background-color": "#f5948c"
         });
         $("#tl_head").text("Laden van halteinformatie mislukt.");
+        $("#loading").remove();
         return
     }
     var stopInfoRequest = new Promise(function(resolve, reject) {
@@ -317,6 +318,12 @@ function populateTrips() {
             // we can use nearly identical code to the previous attempt.
             addStopTimesToTripList(stopTimes);
         });
+    }).catch(function(error) {
+        $("#tl_head").css({
+            "background-color": "#f5948c"
+        });
+        $("#tl_head").text(error);
+        $("#loading").remove();
     });
 }
 
@@ -387,6 +394,6 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("alpha v0.0.12");
+    $("#betaHeader").text("alpha v0.0.13");
     populateTrips();
 });
