@@ -93,7 +93,7 @@ function addStopTimeToTripList(st) {
     $(shortName).text(st.route.short_name);
     // departure time
     let depTime = document.createElement("p");
-    $(depTime).text(st.depart_time);
+    $(depTime).text(st.depart_time.substring(0,5));
     
     // distance
     let distElem = document.createElement("p");
@@ -133,11 +133,8 @@ function addStopTimeToTripList(st) {
     $(tripElem).append(tripTopBox);
     $(tripElem).append(tripBottomBox);
     $(tripElem).addClass("searchResult");
-    if (($("#tripList").children().length - 1) % 2 == 1){
-        $(tripElem).addClass("res_odd");
-    }
     $("#tripList").append(tripElem);
-    
+    $("#loadingIcon").remove();
 }
 
 function populateTrips() {

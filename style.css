@@ -22,12 +22,14 @@ header {
 
 #searchResults {
     margin: 1em 0;
+    padding: 0;
 }
 
 .searchResult {
-    padding: 1em;
+    padding: 0.5em;
     background-color: #fff;
     color: black;
+    margin: 0.5em;
 }
 
 
@@ -62,19 +64,28 @@ header {
     font-size: 1.5em;
 }
 
-.tl_top {
+.tl_top, .tl_bottom {
     display: flex;
     justify-content: left;
 }
 
+.tl_bottom > p {
+    margin: 0 1em;
+}
+
 .tl_shortname {
     padding: 0.7em;
+    margin: 0;
     font-size: 1.1em;
     font-weight: bold;
+    width: 2em;
+    text-align: center;
 }
 
 .tl_deptime {
     margin: auto 1em;
+    width: 3em;
+    text-align: right;
 }
 
 .tl_destname {
@@ -82,3 +93,12 @@ header {
     text-decoration: none;
     color: inherit;
 }
+
+/* ENDLESS ROTATE */
+.rotate{
+    animation: rotate 1.5s linear infinite; 
+}
+@keyframes rotate{
+    to { transform: rotate(360deg); }
+}
+
