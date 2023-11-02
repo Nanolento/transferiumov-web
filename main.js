@@ -184,7 +184,7 @@ function createTimeOut(ms, message) {
 
 function populateTrips() {
     if (window.location.href.includes("stop.htm") == false) {
-        return
+        return;
     }
     
     // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
@@ -215,19 +215,7 @@ function populateTrips() {
     });
     stopInfoRequest.then(function(response) {
         let stopInfo = response;
-        let stopHeader = "";
-        switch (stopInfo.loc_type) {
-            case "stop":
-                stopHeader += "Halte";
-                break;
-            case "station":
-                stopHeader += "Station";
-                break;
-            default:
-                stopHeader += stopInfo.loc_type;
-                break;
-        }
-        stopHeader += " " + stopInfo.name;
+        let stopHeader = stopInfo.name;
         $("#tl_head").text(stopHeader);
         if (stopInfo.parent_station != 0) {
             location.replace("/stop.htm?sid=" + stopInfo.parent_station.toString());
