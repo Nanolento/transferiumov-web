@@ -9,7 +9,7 @@ header {
     background-color: #cfc;
 }
 
-@media screen and (min-width: 500px) {
+@media screen and (min-width: 820px) {
     #content {
         padding: 1em;
         background-color: #eee;
@@ -18,14 +18,18 @@ header {
     }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 821px) {
     #content {
-        padding: 1em;
+        padding: 1em 0;
         background-color: #eee;
         margin: 2em auto;
     }
     .tl_rtbox {
         display: none;
+    }
+    
+    .tl_destname {
+        font-size: 0.87em;
     }
 }
 
@@ -115,20 +119,24 @@ header {
     margin: auto 0;
     font-size: 1.1em;
     font-weight: bold;
-    width: 2.5em;
+    min-width: 1.5em;
+    max-width: 2.5em;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .tl_deptime {
-    margin: auto 1em;
+    margin: 1em 0.5em;
     width: 3em;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .tl_destname {
     margin: auto 1em;
     text-decoration: none;
     color: inherit;
+    flex-shrink: 1;
 }
 
 /* ENDLESS ROTATE */

@@ -96,6 +96,13 @@ function addStopTimesToTripList(stopTimes) {
         let shortName = document.createElement("p");
         $(agencyElem).text(agencyNiceNames[st.route.agency]);
         $(shortName).text(st.route.short_name);
+        let typeElem = document.createElement("p");
+        if (st.trip.long_name != "") {
+            $(typeElem).text(st.trip.long_name);
+        } else {
+            capitalizedType = st.route.type.charAt(0).toUpperCase() + st.route.type.slice(1);
+            $(typeElem).text(capitalizedType);
+        }
         // departure time
         let depTime = document.createElement("p");
         $(depTime).text(st.depart_time.substring(0,5));
@@ -109,6 +116,7 @@ function addStopTimesToTripList(stopTimes) {
         $(distElem).addClass("tl_distelem");
         $(agencyElem).addClass("tl_agency");
         $(depTime).addClass("tl_deptime");
+        $(typeElem).addClass("tl_type");
         $(tripTopBox).addClass("tl_top");
         $(tripBottomBox).addClass("tl_bottom");
         if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL" && st.route.type != "train") {
@@ -146,8 +154,10 @@ function addStopTimesToTripList(stopTimes) {
         }
         $(tripTopBox).append(destName);
         
-        $(tripBottomBox).append(distElem);
+        
         $(tripBottomBox).append(agencyElem);
+        $(tripBottomBox).append(typeElem);
+        $(tripBottomBox).append(distElem);
         
         // realtime placeholder
         let rtSep = document.createElement("p");
