@@ -143,6 +143,7 @@ function addStopTimesToTripList(stopTimes) {
             });
         }
         
+        $(tripBottomBox).append(agencyElem);
         // append elems
         $(tripTopBox).append(depTime);
         if (st.route.type == "train") {
@@ -151,12 +152,11 @@ function addStopTimesToTripList(stopTimes) {
         } else {
             $(shortName).addClass("tl_shortname");
             $(tripTopBox).append(shortName);
+            $(tripBottomBox).append(typeElem);
         }
         $(tripTopBox).append(destName);
         
         
-        $(tripBottomBox).append(agencyElem);
-        $(tripBottomBox).append(typeElem);
         $(tripBottomBox).append(distElem);
         
         // realtime placeholder
