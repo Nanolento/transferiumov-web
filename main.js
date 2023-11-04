@@ -1,5 +1,5 @@
-var siteDomain = "http://192.168.178.227:8080/";
-var apiDomain = "http://192.168.178.227:8000/";
+var siteDomain = "http://192.168.178.32:8080/";
+var apiDomain = "http://192.168.178.32:8000/";
 
 
 const agencyNiceNames = {
@@ -205,10 +205,6 @@ function createTimeOut(ms, message) {
 
 
 function populateTrips() {
-    if (window.location.href.includes("stop.htm") == false) {
-        return;
-    }
-    
     // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
     const urlParams = new URLSearchParams(window.location.search);
     const stopIdParam = urlParams.get("sid");
@@ -406,5 +402,12 @@ $(function() {
         
     });
     $("#betaHeader").text("alpha v0.0.17");
-    populateTrips();
+    
+    if (location.href.includes("stop.htm")) {
+        populateTrips();
+    } else {
+        $("#content").css({
+            "padding": "1em"
+        });
+    }
 });
