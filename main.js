@@ -112,6 +112,7 @@ function addStopTimesToTripList(stopTimes) {
         $(distElem).text((st.distance / 1000).toFixed(1) + " km");
         
         
+        
         $(destName).addClass("tl_destname");
         $(distElem).addClass("tl_distelem");
         $(agencyElem).addClass("tl_agency");
@@ -119,7 +120,8 @@ function addStopTimesToTripList(stopTimes) {
         $(typeElem).addClass("tl_type");
         $(tripTopBox).addClass("tl_top");
         $(tripBottomBox).addClass("tl_bottom");
-        if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL" && st.route.type != "train") {
+        if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL" && st.route.type != "train"
+            && st.route.short_name.includes("trein") == false) {
             $(tripTopBox).css({
                 "color": "#" + st.route.fgcolor,
                 "background-color": "#" + st.route.bgcolor + "99"
@@ -127,7 +129,7 @@ function addStopTimesToTripList(stopTimes) {
             $(shortName).css({
                 "background-color": "#" + st.route.bgcolor
             });
-        } else if (st.route.type != "train") {
+        } else if (st.route.type != "train" && st.route.short_name.includes("trein") == false) {
             $(tripTopBox).css({
                 "background-color": "#dddddd40"
             });
@@ -146,7 +148,7 @@ function addStopTimesToTripList(stopTimes) {
         $(tripBottomBox).append(agencyElem);
         // append elems
         $(tripTopBox).append(depTime);
-        if (st.route.type == "train") {
+        if (st.route.type == "train" || st.route.short_name.includes("trein")) {
             $(shortName).addClass("tl_trainname");
             $(tripBottomBox).append(shortName);
         } else {
@@ -155,7 +157,12 @@ function addStopTimesToTripList(stopTimes) {
             $(tripBottomBox).append(typeElem);
         }
         $(tripTopBox).append(destName);
-        
+        if (typeof st.platformCode !== 'undefined' && st.platformCode != "") {
+            let platformElem = document.createElement("p");
+            $(platformElem).text(st.platformCode);
+            $(platformElem).addClass("tl_platform");
+            $(tripTopBox).append(platformElem);
+        }
         
         $(tripBottomBox).append(distElem);
         
@@ -411,11 +418,12 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("alpha v0.0.17");
+    $("#betaHeader").text("alpha v0.0.21");
     
     if (location.href.includes("stop.htm")) {
         populateTrips();
-    } else {
+    }
+    else {
         $("#content").css({
             "padding": "1em"
         });
