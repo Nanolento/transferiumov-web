@@ -84,7 +84,7 @@ function addStopTimesToTripList(stopTimes) {
         let tripTopBox = document.createElement("div");
         let tripBottomBox = document.createElement("div");
         let destName = document.createElement("a");
-        destName.href = "https://google.com";
+        destName.href = siteDomain + "trip.htm?tid=" + st.trip_id.toString();
         // headsign
         if ("stop_headsign" in st && st.stop_headsign != "") {
             $(destName).text(st.stop_headsign);
@@ -123,11 +123,11 @@ function addStopTimesToTripList(stopTimes) {
         if (st.route.fgcolor != "NULL" && st.route.bgcolor != "NULL" && st.route.type != "train"
             && st.route.short_name.includes("trein") == false) {
             $(tripTopBox).css({
-                "color": "#" + st.route.fgcolor,
-                "background-color": "#" + st.route.bgcolor + "99"
+                "background-color": "#" + st.route.bgcolor + "50"
             });
             $(shortName).css({
-                "background-color": "#" + st.route.bgcolor
+                "background-color": "#" + st.route.bgcolor,
+                "color": "#" + st.route.fgcolor
             });
         } else if (st.route.type != "train" && st.route.short_name.includes("trein") == false) {
             $(tripTopBox).css({
@@ -252,6 +252,7 @@ function populateTrips() {
         let stopInfo = response;
         let stopHeader = stopInfo.name;
         $("#tl_head").text(stopHeader);
+        document.title = stopHeader + " - OVbuzz";
         if (stopInfo.parent_station != 0) {
             location.replace("/stop.htm?sid=" + stopInfo.parent_station.toString());
             return new Promise(function(resolve, reject) {
