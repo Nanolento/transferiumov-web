@@ -84,7 +84,8 @@ function addStopTimesToTripList(stopTimes) {
         let tripTopBox = document.createElement("div");
         let tripBottomBox = document.createElement("div");
         let destName = document.createElement("a");
-        destName.href = siteDomain + "trip.htm?tid=" + st.trip_id.toString();
+        destName.href = siteDomain + "trip.htm?tid=" + st.trip_id.toString() +
+                        "&sid=" + st.stopId.toString();
         // headsign
         if ("stop_headsign" in st && st.stop_headsign != "") {
             $(destName).text(st.stop_headsign);
@@ -322,7 +323,14 @@ function populateTrips() {
                     if (typeof stops[i].platformCode !== "undefined") {
                         for (let j = 0; j < localStopTimes.length; j++) {
                             Object.assign(localStopTimes[j], {
+                                "stopId": stops[i].stopId,
                                 "platformCode": stops[i].platformCode
+                            });
+                        }
+                    } else {
+                        for (let j = 0; j < localStopTimes.length; j++) {
+                            Object.assign(localStopTimes[j], {
+                                "stopId": stops[i].stopId
                             });
                         }
                     }
@@ -354,6 +362,74 @@ function populateTrips() {
         $("#tl_head").text(error.message);
         $("#loading").remove();
     });
+}
+
+
+function getTripInfo() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const stopIdParam = urlParams.get("sid");
+    const tripIdParam = urlParams.get("tid");
+    const tripId = parseInt(tripIdParam);
+    const stopId = parseInt(stopIdParam);
+    
+    let tripStopList = new Promise(function(resolve, reject) {
+        $.ajax({
+            url: apiDomain + "trip_stoptimes",
+            type: "get",
+            data: { tid: tripId },
+            dataType: "json",
+            success: function(response) {
+                resolve(response);
+            },
+            error: function(req) {
+                reject(new Error(`Laden van ritinformatie is mislukt.`));
+            }
+        });
+    });
+    let timedOutPromise = createTimeOut(45000, `Laden van ritinformatie duurde te lang.`);
+    Promise.race([tripStopList, timedOutPromise]).then(function(response) {
+        console.log(response);
+        
+        $.ajax({
+            url: apiDomain + "trip_info",
+            type: "get",
+            data: { tid: tripId },
+            dataType: "json",
+            success: function(resp) {
+                headText = "Lijn ";
+                headText += resp.route.short_name;
+                headText += " naar " + resp.headsign;
+                
+                $("#sl_ritnr").text("Rit " + resp.short_name + ", ");
+                $("#tl_head").text(headText);
+                addTripInfoToStopList(response);
+            }
+        });
+    }).catch(function(req) {
+        $("#sl_head").text(req.message);
+        $("#sl_head").addClass("warning");
+        $("#loading").remove();
+    });
+}
+
+
+function addTripInfoToStopList(stopTimes) {
+    $("#sl_ritnr").text($("#sl_ritnr").text() + "stopt bij " + stopTimes.length.toString() + " haltes.");
+    stopTimes.forEach(st => {
+        let stopElem = document.createElement("div");
+        $(stopElem).addClass("searchResult");
+        $(stopElem).addClass("sl_box");
+        let stopNameElem = document.createElement("p");
+        $(stopNameElem).text(st.stop_name);
+        $(stopNameElem).addClass("sl_name");
+        let depTimeElem = document.createElement("p");
+        $(depTimeElem).text(st.depart_time.substring(0,5));
+        $(depTimeElem).addClass("sl_deptime");
+        $(stopElem).append(depTimeElem);
+        $(stopElem).append(stopNameElem);
+        $("#stopList").append(stopElem);
+    });
+    $("#loading").remove();
 }
 
 
@@ -428,5 +504,8 @@ $(function() {
         $("#content").css({
             "padding": "1em"
         });
+    }
+    if (location.href.includes("trip.htm")) {
+        getTripInfo();
     }
 });
