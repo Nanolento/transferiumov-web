@@ -387,8 +387,7 @@ function getTripInfo() {
     });
     let timedOutPromise = createTimeOut(45000, `Laden van ritinformatie duurde te lang.`);
     Promise.race([tripStopList, timedOutPromise]).then(function(response) {
-        console.log(response);
-        
+
         $.ajax({
             url: apiDomain + "trip_info",
             type: "get",
@@ -398,7 +397,7 @@ function getTripInfo() {
                 headText = "Lijn ";
                 headText += resp.route.short_name;
                 headText += " naar " + resp.headsign;
-                
+                document.title = resp.route.short_name + " " + resp.headsign + " - OVbuzz";
                 $("#sl_ritnr").text("Rit " + resp.short_name + ", ");
                 $("#tl_head").text(headText);
                 if (!isNaN(stopId)) {
@@ -423,11 +422,16 @@ function addTripInfoToStopList(stopTimes, sid) {
         $(stopElem).addClass("sl_box");
         let stopNameElem = document.createElement("p");
         let stopLinkElem = document.createElement("a");
-        $(stopLinkElem).text(st.stop_name.split(",")[1].split("(")[0]);
         let stopPlaceName = document.createElement("p");
-        $(stopPlaceName).text(st.stop_name.split(",")[0]);
-        $(stopPlaceName).addClass("sl_placename");
-        stopLinkElem.href = siteDomain + "stop.htm?sid=" + st.stop_id;
+        if (st.stop_name.includes(",")) {
+            $(stopLinkElem).text(st.stop_name.split(",")[1].split("(")[0]);
+            $(stopPlaceName).text(st.stop_name.split(",")[0]);
+            $(stopPlaceName).addClass("sl_placename");
+            stopLinkElem.href = siteDomain + "stop.htm?sid=" + st.stop_id;
+            
+        } else {
+            $(stopLinkElem).text(st.stop_name);
+        }
         $(stopNameElem).addClass("sl_name");
         $(stopNameElem).append(stopLinkElem);
         let depTimeElem = document.createElement("p");
@@ -438,7 +442,9 @@ function addTripInfoToStopList(stopTimes, sid) {
         $(stopElem).addClass("sl_box");
         $(stopBox).addClass("sl_sbox");
         $(stopBox).append(stopNameElem);
-        $(stopBox).append(stopPlaceName);
+        if (st.stop_name.includes(",")) {
+            $(stopBox).append(stopPlaceName);
+        }
         $(stopElem).append(stopBox);
         if (sid != 0) {
             if (st.stop_id == sid) {
