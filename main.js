@@ -371,7 +371,6 @@ function getTripInfo() {
     const tripIdParam = urlParams.get("tid");
     const tripId = parseInt(tripIdParam);
     const stopId = parseInt(stopIdParam);
-    
     let tripStopList = new Promise(function(resolve, reject) {
         $.ajax({
             url: apiDomain + "trip_stoptimes",
@@ -402,7 +401,11 @@ function getTripInfo() {
                 
                 $("#sl_ritnr").text("Rit " + resp.short_name + ", ");
                 $("#tl_head").text(headText);
-                addTripInfoToStopList(response);
+                if (!isNaN(stopId)) {
+                    addTripInfoToStopList(response, stopId);
+                } else {
+                    addTripInfoToStopList(response, 0);
+                }
             }
         });
     }).catch(function(req) {
@@ -413,20 +416,35 @@ function getTripInfo() {
 }
 
 
-function addTripInfoToStopList(stopTimes) {
+function addTripInfoToStopList(stopTimes, sid) {
     $("#sl_ritnr").text($("#sl_ritnr").text() + "stopt bij " + stopTimes.length.toString() + " haltes.");
     stopTimes.forEach(st => {
         let stopElem = document.createElement("div");
-        $(stopElem).addClass("searchResult");
         $(stopElem).addClass("sl_box");
         let stopNameElem = document.createElement("p");
-        $(stopNameElem).text(st.stop_name);
+        let stopLinkElem = document.createElement("a");
+        $(stopLinkElem).text(st.stop_name.split(",")[1].split("(")[0]);
+        let stopPlaceName = document.createElement("p");
+        $(stopPlaceName).text(st.stop_name.split(",")[0]);
+        $(stopPlaceName).addClass("sl_placename");
+        stopLinkElem.href = siteDomain + "stop.htm?sid=" + st.stop_id;
         $(stopNameElem).addClass("sl_name");
+        $(stopNameElem).append(stopLinkElem);
         let depTimeElem = document.createElement("p");
         $(depTimeElem).text(st.depart_time.substring(0,5));
         $(depTimeElem).addClass("sl_deptime");
         $(stopElem).append(depTimeElem);
-        $(stopElem).append(stopNameElem);
+        let stopBox = document.createElement("div");
+        $(stopElem).addClass("sl_box");
+        $(stopBox).addClass("sl_sbox");
+        $(stopBox).append(stopNameElem);
+        $(stopBox).append(stopPlaceName);
+        $(stopElem).append(stopBox);
+        if (sid != 0) {
+            if (st.stop_id == sid) {
+                $(stopElem).addClass("sl_selstop");
+            }
+        }
         $("#stopList").append(stopElem);
     });
     $("#loading").remove();
