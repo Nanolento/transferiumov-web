@@ -1,5 +1,5 @@
-var siteDomain = "http://192.168.178.32:8080/";
-var apiDomain = "http://192.168.178.32:8000/";
+var siteDomain = "http://192.168.178.227:8080/";
+var apiDomain = "http://192.168.178.227:8000/";
 
 
 const agencyNiceNames = {
@@ -160,7 +160,7 @@ function addStopTimesToTripList(stopTimes) {
         $(tripTopBox).append(destName);
         if (typeof st.platformCode !== 'undefined' && st.platformCode != "") {
             let platformElem = document.createElement("p");
-            $(platformElem).text(st.platformCode);
+            $(platformElem).text(st.platform_code);
             $(platformElem).addClass("tl_platform");
             $(tripTopBox).append(platformElem);
         }
@@ -280,14 +280,12 @@ function populateTrips() {
         let stops = [];
         if (response.length == 0) {
             stops.push({
-                "stopId": stopId,
-                "platformCode": undefined
+                "stopId": stopId
             });
         } else {
             for (let i = 0; i < response.length; i++) {
                 stops.push({
-                    "stopId": response[i].stop_id,
-                    "platformCode": response[i].platform_code
+                    "stopId": response[i].stop_id
                 });
             }
         }
@@ -320,21 +318,6 @@ function populateTrips() {
                     // clone the array as the promise value is immutable.
                     let localStopTimes = Array.from(ffPromises[i].value);
                     // if it has a platform code, append platform code to the stop times.
-                    if (typeof stops[i].platformCode !== "undefined") {
-                        for (let j = 0; j < localStopTimes.length; j++) {
-                            Object.assign(localStopTimes[j], {
-                                "stopId": stops[i].stopId,
-                                "platformCode": stops[i].platformCode
-                            });
-                        }
-                    } else {
-                        for (let j = 0; j < localStopTimes.length; j++) {
-                            Object.assign(localStopTimes[j], {
-                                "stopId": stops[i].stopId
-                            });
-                        }
-                    }
-                    
                     stopTimes = stopTimes.concat(localStopTimes);
                 } else {
                     let warning = document.createElement("p");
@@ -408,8 +391,8 @@ function getTripInfo() {
             }
         });
     }).catch(function(req) {
-        $("#sl_head").text(req.message);
-        $("#sl_head").addClass("warning");
+        $("#tl_head").text(req.message);
+        $("#tl_head").addClass("warning");
         $("#loading").remove();
     });
 }
