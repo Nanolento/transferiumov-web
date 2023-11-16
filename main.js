@@ -85,7 +85,7 @@ function addStopTimesToTripList(stopTimes) {
         let tripBottomBox = document.createElement("div");
         let destName = document.createElement("a");
         destName.href = siteDomain + "trip.htm?tid=" + st.trip_id.toString() +
-                        "&sid=" + st.stopId.toString();
+                        "&sid=" + st.stop_id.toString();
         // headsign
         if ("stop_headsign" in st && st.stop_headsign != "") {
             $(destName).text(st.stop_headsign);
