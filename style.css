@@ -188,6 +188,10 @@ header {
     margin: 0.2em 0.5em;
 }
 
+.sl_dist {
+    color: #666;
+}
+
 .sl_selstop {
     background-color: #ffffcc;
 }
