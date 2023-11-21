@@ -1,5 +1,5 @@
-var siteDomain = "http://192.168.178.227:8080/";
-var apiDomain = "http://192.168.178.227:8000/";
+var siteDomain = "http://127.0.0.1:8080/";
+var apiDomain = "http://127.0.0.1:8000/";
 
 
 const agencyNiceNames = {
@@ -109,13 +109,13 @@ function addStopTimesToTripList(stopTimes) {
         $(depTime).text(st.depart_time.substring(0,5));
         
         // distance
-        let distElem = document.createElement("p");
-        $(distElem).text((st.distance / 1000).toFixed(1) + " km");
+        //let distElem = document.createElement("p");
+        //$(distElem).text((st.distance / 1000).toFixed(1) + " km");
         
         
         
         $(destName).addClass("tl_destname");
-        $(distElem).addClass("tl_distelem");
+        //$(distElem).addClass("tl_distelem");
         $(agencyElem).addClass("tl_agency");
         $(depTime).addClass("tl_deptime");
         $(typeElem).addClass("tl_type");
@@ -165,7 +165,7 @@ function addStopTimesToTripList(stopTimes) {
             $(tripTopBox).append(platformElem);
         }
         
-        $(tripBottomBox).append(distElem);
+        //$(tripBottomBox).append(distElem);
         
         // realtime placeholder
         let rtSep = document.createElement("p");
@@ -420,15 +420,27 @@ function addTripInfoToStopList(stopTimes, sid) {
         let depTimeElem = document.createElement("p");
         $(depTimeElem).text(st.depart_time.substring(0,5));
         $(depTimeElem).addClass("sl_deptime");
-        $(stopElem).append(depTimeElem);
+        
         let stopBox = document.createElement("div");
+        let depBox = document.createElement("div");
         $(stopElem).addClass("sl_box");
         $(stopBox).addClass("sl_sbox");
+        $(depBox).addClass("sl_dbox");
+        $(depBox).append(depTimeElem);
         $(stopBox).append(stopNameElem);
         if (st.stop_name.includes(",")) {
             $(stopBox).append(stopPlaceName);
         }
+        if ($(stopLinkElem).text().includes(st.stop_name.split(",")[0])) {
+            $(stopLinkElem).text("Slechte haltenaam");
+        }
+        let distElem = document.createElement("p");
+        $(distElem).text((st.distance / 1000).toFixed(1) + " km");
+        $(distElem).addClass("sl_dist");
+        $(depBox).append(distElem);
+        $(stopElem).append(depBox);
         $(stopElem).append(stopBox);
+        
         if (sid != 0) {
             if (st.stop_id == sid) {
                 $(stopElem).addClass("sl_selstop");
