@@ -178,7 +178,7 @@ header {
 
 .sl_dbox {
     display: flex;
-    width: 5em;
+    min-width: 5em;
     justify-content: right;
     flex-direction: column;
 }
@@ -198,4 +198,21 @@ header {
 
 .sl_placename {
     color: #666;
+}
+
+#tl_controls {
+    display: none;
+    justify-content: space-between;
+}
+
+#tl_controls > p {
+    margin: 0 1em;
+}
+
+#tl_filter_header {
+    font-weight: bold;
+}
+
+#tl_tripcount {
+    margin: 1em;
 }

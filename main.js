@@ -1,5 +1,5 @@
-var siteDomain = "http://127.0.0.1:8080/";
-var apiDomain = "http://127.0.0.1:8000/";
+const siteDomain = "http://127.0.0.1:8080/";
+const apiDomain = "http://127.0.0.1:8000/";
 
 
 const agencyNiceNames = {
@@ -76,9 +76,12 @@ function jsonToStopList(j) {
 
 
 function addStopTimesToTripList(stopTimes) {
-    let countElem = document.createElement("p");
-    $(countElem).text(stopTimes.length.toString() + " ritten vandaag");
-    $("#tripList").append(countElem);
+    if ($("#tl_tripcount").length == 0) {
+        let countElem = document.createElement("p");
+        $(countElem).text(stopTimes.length.toString() + " ritten vandaag");
+        $(countElem).attr("id", "tl_tripcount");
+        $("#tripList").append(countElem);
+    }
     stopTimes.forEach(st => {
         let tripElem = document.createElement("div");
         let tripTopBox = document.createElement("div");
@@ -186,7 +189,17 @@ function addStopTimesToTripList(stopTimes) {
         $(tripElem).addClass("searchResult");
         $("#tripList").append(tripElem);
     });
-    $("#loading").remove();
+    $("#loading").css("display", "none");
+    $("#tl_controls").css("display", "flex");
+    
+    // if reloading, don't scroll
+    // check if loading has happened before, else say it has
+    if ($("#loaded").val() == "yes") {
+        return;
+    } else {
+        $("#loaded").val("yes");
+    }
+    
     // scroll to current time
     // get element to scroll to
     let currentHour = new Date().getHours();
@@ -227,13 +240,27 @@ function populateTrips() {
     const urlParams = new URLSearchParams(window.location.search);
     const stopIdParam = urlParams.get("sid");
     
+    // store stop id
+    var sidStorage = document.createElement("input");
+    sidStorage.type = "hidden";
+    $(sidStorage).val(stopIdParam);
+    $(sidStorage).attr("id", "stopId");
+    $("#tripList").append(sidStorage);
+    // and if the first load has happened yet.
+    var loadStorage = document.createElement("input");
+    loadStorage.type = "hidden";
+    $(loadStorage).val("no");
+    $(loadStorage).attr("id", "loaded");
+    $("#tripList").append(loadStorage);
+    
+    
     let stopId = parseInt(stopIdParam);
     if (isNaN(stopId)) {
         $("#tl_head").css({
             "background-color": "#f5948c"
         });
         $("#tl_head").text("Laden van halteinformatie mislukt.");
-        $("#loading").remove();
+        $("#loading").css("display", "none");
         return
     }
     var stopInfoRequest = new Promise(function(resolve, reject) {
@@ -343,7 +370,101 @@ function populateTrips() {
             $("#tl_head").addClass("warning");
         }
         $("#tl_head").text(error.message);
-        $("#loading").remove();
+        $("#loading").css("display", "none");
+    });
+}
+
+
+function reloadTrips() {
+    // Exact copy of populateTrips, omitting the stopInfo request since we already have
+    // that information.
+    
+    // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+    const stopIdParam = $("#stopId").val();
+    
+    let stopId = parseInt(stopIdParam);
+    
+    var stopInfoRequest = new Promise(function(resolve, reject) {
+        $.ajax({
+            url: apiDomain + "get_child_stops",
+            type: "get",
+            data: { sid: stopId },
+            dataType: "json",
+            success: function(response) {
+                resolve(response);
+            },
+            error: function(req) {
+                reject(new Error(`Laden van bijbehorende haltes is mislukt.`));
+            }
+        });
+    });
+    stopInfoRequest.then(function(response) {
+        let stops = [];
+        if (response.length == 0) {
+            stops.push({
+                "stopId": stopId
+            });
+        } else {
+            for (let i = 0; i < response.length; i++) {
+                stops.push({
+                    "stopId": response[i].stop_id
+                });
+            }
+        }
+        let promises = [];
+        for (let i = 0; i < stops.length; i++) {
+            let getPromise = new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: apiDomain + "stop_trip_times",
+                    type: "get",
+                    data: { sid: stops[i].stopId },
+                    dataType: "json",
+                    success: function(response) {
+                        resolve(response);
+                    },
+                    error: function(req) {
+                        reject(new Error(`Laden van rittijden voor halte ${stops[i].stopId} mislukt.`));
+                    }
+                });
+            });
+            
+            let timedOutPromise = createTimeOut(45000, `Tijdens het laden van rittijden voor halte ${stops[i].stopId} deed ` +
+                                                       `de server er te lang over om te reageren.`);
+            promises.push(Promise.race([getPromise, timedOutPromise]));
+        }
+        Promise.allSettled(promises).then(ffPromises => {
+            let stopTimes = [];
+            for (let i = 0; i < ffPromises.length; i++) {
+                if (ffPromises[i].status == "fulfilled") {
+                    // for this stop only
+                    // clone the array as the promise value is immutable.
+                    let localStopTimes = Array.from(ffPromises[i].value);
+                    // if it has a platform code, append platform code to the stop times.
+                    stopTimes = stopTimes.concat(localStopTimes);
+                } else {
+                    let warning = document.createElement("p");
+                    $(warning).text(ffPromises[i].reason.message);
+                    $(warning).addClass("warning");
+                    $("#tripList").append(warning);
+                }
+            }
+            // now we have all stopTimes with their platform codes.
+            // now we sort them by departure time.
+            stopTimes.sort(function(a, b) {
+                let compareIntA = parseInt(a.depart_time.substring(0,2)) * 60 + parseInt(a.depart_time.substring(3,5));
+                let compareIntB = parseInt(b.depart_time.substring(0,2)) * 60 + parseInt(b.depart_time.substring(3,5));
+                return compareIntA - compareIntB;
+            });
+            // now we can create elements.
+            // we can use nearly identical code to the previous attempt.
+            
+            // since we are reloading, remove old elems.
+            $(".searchResult").remove();
+            // re-add stop times.
+            addStopTimesToTripList(stopTimes);
+        });
+    }).catch(function(error) {
+        console.log("if this happens, we dont know whats happening");
     });
 }
 
@@ -377,7 +498,9 @@ function getTripInfo() {
             data: { tid: tripId },
             dataType: "json",
             success: function(resp) {
-                headText = "Lijn ";
+                if (resp.route.type != "train")
+                    headText = "Lijn ";
+                else headText = "";
                 headText += resp.route.short_name;
                 headText += " naar " + resp.headsign;
                 document.title = resp.route.short_name + " " + resp.headsign + " - OVbuzz";
@@ -393,7 +516,7 @@ function getTripInfo() {
     }).catch(function(req) {
         $("#tl_head").text(req.message);
         $("#tl_head").addClass("warning");
-        $("#loading").remove();
+        $("#loading").css("display", "none");
     });
 }
 
@@ -414,6 +537,7 @@ function addTripInfoToStopList(stopTimes, sid) {
             
         } else {
             $(stopLinkElem).text(st.stop_name);
+            stopLinkElem.href = siteDomain + "stop.htm?sid=" + st.stop_id;
         }
         $(stopNameElem).addClass("sl_name");
         $(stopNameElem).append(stopLinkElem);
@@ -431,9 +555,6 @@ function addTripInfoToStopList(stopTimes, sid) {
         if (st.stop_name.includes(",")) {
             $(stopBox).append(stopPlaceName);
         }
-        if ($(stopLinkElem).text().includes(st.stop_name.split(",")[0])) {
-            $(stopLinkElem).text("Slechte haltenaam");
-        }
         let distElem = document.createElement("p");
         $(distElem).text((st.distance / 1000).toFixed(1) + " km");
         $(distElem).addClass("sl_dist");
@@ -448,7 +569,7 @@ function addTripInfoToStopList(stopTimes, sid) {
         }
         $("#stopList").append(stopElem);
     });
-    $("#loading").remove();
+    $("#loading").css("display", "none");
 }
 
 
@@ -486,13 +607,13 @@ function performSearch() {
     $(loadingIcon).insertAfter("#searchBtn");
     Promise.race([searchPromise, timedOutPromise]).then(function(response) {
         jsonToStopList(response);
-        $("#loading").remove();
+        $("#loading").css("display", "none");
     }).catch(function(error) {
         let warning = document.createElement("p");
         $(warning).text(error.message);
         $(warning).addClass("warning");
         $("#searchResults").append(warning);
-        $("#loading").remove();
+        $("#loading").css("display", "none");
     });
 }
 
@@ -502,6 +623,13 @@ $(function() {
         if ($("#query").val().length >= 3) {
             performSearch();
         }
+    });
+    $("#reloadBtn").click(function() {
+        $("#loading").css("display", "block");
+        reloadTrips();
+    });
+    $("#deleteFilterBtn").click(function() {
+        location.reload();
     });
     $("#query").keyup(function(event) {
         if ($("#query").val().length < 3) {
