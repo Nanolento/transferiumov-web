@@ -16,12 +16,15 @@ include __DIR__ . "/../templates/header.php";
     super gemakkelijk je reis kunt plannen.</p>
 <noscript>Sommige functionaliteiten van TransferiumOV kunnen mogelijk niet werken
 als je browser JavaScript niet ondersteunt of niet aan heeft staan.<br></noscript>
-<select id="searchOption">
-    <option value="stop" selected>Halte/station</option>
-    <option value="route">Lijn</option>
-</select>
-<input id="query" type="text" placeholder="Zoeken"></input>
-<button id="searchBtn" disabled>Zoeken</button>
+
+<form action="/tov/search" method="get">
+    <select id="searchOption" name="type">
+        <option value="stop" selected>Halte/station</option>
+        <option value="route">Lijn</option>
+    </select>
+    <input id="query" name="query" type="text" placeholder="Zoeken"></input>
+    <button type="submit" id="searchBtn" disabled>Zoeken</button>
+</form>
 <!--<br><textarea id="output"></textarea>--><br>
 <div id="searchResults"></div>
 

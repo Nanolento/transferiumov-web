@@ -8,8 +8,10 @@ if (new_route("/tov/", "get")) {
     $page_title = "TransferiumOV";
     include __DIR__ . "/views/main.php";
 }
-elseif (new_route("/tov/test", "get")) {
-    echo "testing 123";
+elseif (new_route("/tov/search", "get")) {
+    echo "<pre>";
+    print_r($_GET);
+    echo "</pre>";
 }
 else {
     http_response_code(404);
