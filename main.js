@@ -42,39 +42,6 @@ const agencyNiceNames = {
     "IFF:BRENG": "Breng"
 };
 
-
-function jsonToStopList(j) {
-    $("#searchResults").html(j.length.toString() + " zoekresultaten");
-    for (let i = 0; i < j.length; i++) {
-        let stopListItem = document.createElement("div");
-        
-        let stopNameElem = document.createElement("a");
-        stopNameElem.href = siteDomain + "stop.htm?sid=" + j[i].stop_id.toString();
-        $(stopNameElem).text(j[i].name);
-        $(stopListItem).append(stopNameElem);
-        
-        let stopDescElem = document.createElement("p");
-        $(stopDescElem).text("Type: " + j[i].loc_type + ", ID: " + j[i].stop_id.toString());
-        $(stopListItem).append(stopDescElem);
-        
-        if ("platform_code" in j[i]) {
-            let stopPlatformElem = document.createElement("p");
-            $(stopPlatformElem).text("Perron " + j[i].platform_code);
-            $(stopPlatformElem).addClass("res_platform");
-            $(stopListItem).append(stopPlatformElem);
-        }
-        $(stopListItem).addClass("searchResult");
-        
-        // Zebra striping
-        if (i % 2 == 1) {
-            $(stopListItem).addClass("res_odd");
-        }
-
-        $("#searchResults").append(stopListItem);
-    }
-}
-
-
 function addStopTimesToTripList(stopTimes) {
     if ($("#tl_tripcount").length == 0) {
         let countElem = document.createElement("p");
@@ -572,52 +539,6 @@ function addTripInfoToStopList(stopTimes, sid) {
     $("#loading").css("display", "none");
 }
 
-
-function performSearch() {
-    if ($("#searchOption").val() == "route") {
-        location.href = "https://qbuzz.nl/gd";
-        return;
-    }
-    let sQuery = $("#query").val()
-    let searchPromise = new Promise(function(resolve, reject) {
-        $.ajax({
-            url: apiDomain + "search_stop",
-            type: "get",
-            data: { query: sQuery },
-            dataType: "json",
-            success: function(response) {
-                resolve(response);
-            },
-            error: function (req) {
-                reject(new Error(`Laden van zoekresultaten is mislukt.`));
-            }
-        });
-    });
-    let timedOutPromise = createTimeOut(10000, `Laden van zoekresultaten duurde te lang.`);
-    // create loading spinner for searching
-    let loadingIcon = document.createElement("img");
-    $(loadingIcon).attr("id", "loading");
-    $(loadingIcon).attr({
-        "src": "loading.png",
-        "width": "16",
-        "height": "16"
-    });
-    $(loadingIcon).addClass("rotate");
-    $("#searchResults").html("");
-    $(loadingIcon).insertAfter("#searchBtn");
-    Promise.race([searchPromise, timedOutPromise]).then(function(response) {
-        jsonToStopList(response);
-        $("#loading").css("display", "none");
-    }).catch(function(error) {
-        let warning = document.createElement("p");
-        $(warning).text(error.message);
-        $(warning).addClass("warning");
-        $("#searchResults").append(warning);
-        $("#loading").css("display", "none");
-    });
-}
-
-
 $(function() {
     /*$("#searchBtn").click(function() {
         if ($("#query").val().length >= 3) {
@@ -637,9 +558,9 @@ $(function() {
         } else {
             $("#searchBtn").prop("disabled", false);
         }
-        if (event.key === "Enter" && $("#query").val().length >= 3) {
+        /*if (event.key === "Enter" && $("#query").val().length >= 3) {
             performSearch();
-        }
+        }*/
         
     });
     
