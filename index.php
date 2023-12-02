@@ -14,7 +14,15 @@ elseif (new_route("/tov/search", "get")) {
         echo "Invalid query!";
         die();
     }
-    $search_query = $_GET['query'];
+    $search_query = htmlspecialchars($_GET['query']);
+
+    $page_title = "Zoekresultaten: $search_query - TransferiumOV";
+
+    if ($_GET['type'] != "stop") {
+        echo "This search type is not yet available";
+        redirect("https://www.qbuzz.nl/gd");
+    }
+    $search_results = get_search_results($search_query);
     include __DIR__ . "/views/search.php";
 }
 else {

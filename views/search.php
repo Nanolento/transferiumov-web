@@ -14,7 +14,7 @@ include __DIR__ . "/../templates/header.php";
     <button type="submit" id="searchBtn" disabled>Zoeken</button>
 </form>
 <!--<br><textarea id="output"></textarea>--><br>
-<div id="searchResults"></div>
+<div id="searchResults"><?= $search_results ?></div>
 
 <?php
 

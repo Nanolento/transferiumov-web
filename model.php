@@ -32,7 +32,7 @@ function new_route($route_uri, $request_type){
     }
 }
 
-function connect_db($db) {
+function connect_db() {
     $charset = "utf8mb4";
     $dsn = "mysql:host=localhost;dbname=ovbuzz;charset=$charset";
     $options = [
@@ -49,7 +49,23 @@ function connect_db($db) {
 }
 
 function get_search_results($query) {
-    return "hello";
+    $pdo = connect_db();
+    $stmt = $pdo->prepare("SELECT * FROM Stop WHERE name LIKE ?;");
+    $stmt->execute(["%".$query."%"]);
+    $result_count = $stmt->rowCount();
+    if ($result_count > 0) {
+        $resultsList = $result_count . " zoekresultaten";
+        $results = $stmt->fetchAll();
+        foreach ($results as $result) {
+            $resultElem = "<div class='searchResult'>
+            <a href='/tov/stop?sid=".$result['id']."'>".$result['name']."</a>
+            <p>Type: ".$result['loc_type'].", ID: ".$result['id']."</p></div>";
+            $resultsList .= $resultElem;
+        }
+        return $resultsList;
+    } else {
+        return "Geen zoekresultaten.";
+    }
 }
 
 function redirect($location){
