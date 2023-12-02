@@ -642,7 +642,7 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("alpha v0.0.21");
+    $("#betaHeader").text("versienummers zijn voor zwakkelingen ;)");
     
     if (location.href.includes("stop.htm")) {
         populateTrips();
