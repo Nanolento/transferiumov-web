@@ -48,4 +48,13 @@ function connect_db($db) {
     }
 }
 
+function get_search_results($query) {
+    return "hello";
+}
+
+function redirect($location){
+    header(sprintf('Location: %s', $location));
+    die();
+}
+
 ?>
