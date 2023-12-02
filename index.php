@@ -2,8 +2,11 @@
 
 include 'model.php';
 
+$slogan = "PHP is onderweg!";
+
 if (new_route("/tov/", "get")) {
-    echo "Home page";
+    $page_title = "TransferiumOV";
+    include __DIR__ . "/views/main.php";
 }
 elseif (new_route("/tov/test", "get")) {
     echo "testing 123";

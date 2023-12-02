@@ -642,7 +642,6 @@ $(function() {
         }
         
     });
-    $("#betaHeader").text("versienummers zijn voor zwakkelingen ;)");
     
     if (location.href.includes("stop.htm")) {
         populateTrips();
