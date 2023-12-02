@@ -540,11 +540,6 @@ function addTripInfoToStopList(stopTimes, sid) {
 }
 
 $(function() {
-    /*$("#searchBtn").click(function() {
-        if ($("#query").val().length >= 3) {
-            performSearch();
-        }
-    });*/
     $("#reloadBtn").click(function() {
         $("#loading").css("display", "block");
         reloadTrips();
@@ -558,9 +553,6 @@ $(function() {
         } else {
             $("#searchBtn").prop("disabled", false);
         }
-        /*if (event.key === "Enter" && $("#query").val().length >= 3) {
-            performSearch();
-        }*/
         
     });
     

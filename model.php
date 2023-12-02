@@ -58,7 +58,7 @@ function get_search_results($query) {
         $results = $stmt->fetchAll();
         foreach ($results as $result) {
             $resultElem = "<div class='searchResult'>
-            <a href='/tov/stop?sid=".$result['id']."'>".$result['name']."</a>
+            <a href='stop?sid=".$result['id']."'>".$result['name']."</a>
             <p>Type: ".$result['loc_type'].", ID: ".$result['id']."</p></div>";
             $resultsList .= $resultElem;
         }
