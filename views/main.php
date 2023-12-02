@@ -26,7 +26,6 @@ als je browser JavaScript niet ondersteunt of niet aan heeft staan.<br></noscrip
     <button type="submit" id="searchBtn" disabled>Zoeken</button>
 </form>
 <!--<br><textarea id="output"></textarea>--><br>
-<div id="searchResults"></div>
 
 <?php
 

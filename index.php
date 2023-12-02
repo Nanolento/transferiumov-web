@@ -9,9 +9,13 @@ if (new_route("/tov/", "get")) {
     include __DIR__ . "/views/main.php";
 }
 elseif (new_route("/tov/search", "get")) {
-    echo "<pre>";
-    print_r($_GET);
-    echo "</pre>";
+    // validate
+    if (!isset($_GET['type']) or !isset($_GET['query'])) {
+        echo "Invalid query!";
+        die();
+    }
+    $search_query = $_GET['query'];
+    include __DIR__ . "/views/search.php";
 }
 else {
     http_response_code(404);
