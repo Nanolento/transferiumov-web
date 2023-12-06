@@ -29,9 +29,16 @@ elseif (new_route("/tov/search", "get")) {
     include __DIR__ . "/views/search.php";
 }
 elseif (new_route("/tov/stop", "get")) {
-    echo "<pre>";
-    print_r($_GET);
-    echo "</pre>";
+    // validate
+    if (!isset($_GET['sid']) or !is_numeric($_GET['sid'])) {
+        echo "Invalid data was given!";
+        die();
+    }
+    // execute
+    //$stop_list = get_stop_list($_GET['sid']);
+
+    // include view
+    include __DIR__ . "/views/stop.php";
 }
 else {
     http_response_code(404);

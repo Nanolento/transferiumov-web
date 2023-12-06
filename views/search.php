@@ -12,8 +12,7 @@ include __DIR__ . "/../templates/header.php";
     </select>
     <input id="query" name="query" type="text" placeholder="Zoeken" value="<?= $search_query ?>">
     <button type="submit" id="searchBtn" disabled>Zoeken</button>
-</form>
-<!--<br><textarea id="output"></textarea>--><br>
+</form><br>
 <div id="searchResults"><?= $search_results ?></div>
 
 <?php

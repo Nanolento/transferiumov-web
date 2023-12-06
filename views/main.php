@@ -22,7 +22,7 @@ als je browser JavaScript niet ondersteunt of niet aan heeft staan.<br></noscrip
         <option value="stop" selected>Halte/station</option>
         <option value="route">Lijn</option>
     </select>
-    <input id="query" name="query" type="text" placeholder="Zoeken"></input>
+    <input id="query" name="query" type="text" placeholder="Zoeken">
     <button type="submit" id="searchBtn" disabled>Zoeken</button>
 </form>
 <!--<br><textarea id="output"></textarea>--><br>
