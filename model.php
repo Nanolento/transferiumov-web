@@ -73,4 +73,20 @@ function redirect($location){
     die();
 }
 
+
+function get_stop_info($sid) {
+    $pdo = connect_db();
+    $stmt = $pdo->prepare("SELECT * FROM Stop WHERE id = ?");
+    $stmt->execute([$sid]);
+    if ($stmt->rowCount() >= 1) {
+        return $stmt->fetch();
+    } else {
+        return [];
+    }
+}
+
+function get_stop_list($sid) {
+    return "Hello";
+}
+
 ?>

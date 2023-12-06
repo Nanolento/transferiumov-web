@@ -34,8 +34,14 @@ elseif (new_route("/tov/stop", "get")) {
         echo "Invalid data was given!";
         die();
     }
+    $stop_info = get_stop_info($_GET['sid']);
+    if (!$stop_info or !isset($stop_info['name'])) {
+        echo "The stop does not exist!";
+        die();
+    }
+    $page_title = "Halte ".$stop_info['name']." - TransferiumOV";
     // execute
-    //$stop_list = get_stop_list($_GET['sid']);
+    $stop_list = get_stop_list($_GET['sid']);
 
     // include view
     include __DIR__ . "/views/stop.php";

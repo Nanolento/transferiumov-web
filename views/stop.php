@@ -6,11 +6,8 @@ include __DIR__ . "/../templates/header.php";
 <noscript>Je hebt JavaScript nodig om OVbuzz te gebruiken!
 Check of JavaScript aan staat in je browser of dat
 je browser het ondersteunt.<br></noscript>
-<h2 class="tl_header" id="tl_head">Informatie wordt opgehaald...</h2>
-<div id="loading">
-    <img class="rotate" src="loading.png" width=64 height=64 />
-    <p>Informatie wordt opgehaald...</p>
-</div>
+<h2 class="tl_header" id="tl_head"><?= $stop_info['name'] ?></h2>
+
 <div id="tl_controls">
     <p><button id="reloadBtn">Herladen</button></p>
     <p><span id="tl_filter_header">Filters:</span>
@@ -21,7 +18,7 @@ je browser het ondersteunt.<br></noscript>
     </p>
 </div>
 <div id="tripList">
-
+    <?= $stop_list ?>
 </div>
 <p id="disclaimer">&copy; Copyright 2022-2023 Jelmer Smit<br>OVbuzz is niet geassocieerd met de openbare vervoerders in
     de Benelux.<br>OVbuzz stelt slechts een website beschikbaar waarop de dienstregelingen
