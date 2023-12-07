@@ -51,9 +51,16 @@ elseif (new_route("/tov/trip", "get")) {
         echo "Invalid data was given!";
         die();
     }
+    $trip_info = get_trip_info($_GET['tid']);
+    $route_info = get_route_info($trip_info['route_id']);
     $page_title = "Informatie over rit - TransferiumOV";
-    $page_header = "<span style='background-color: #00aa00;color:white;'>Lijn 1</span> naar P+R Reitdiep";
-    $trip_no = "1657";
+    if ($route_info['bgcolor'] != "NULL" and $route_info['fgcolor'] != "NULL") {
+        $page_header = "<span style='background-color: #" . $route_info['bgcolor'] . ";color: #" .
+            $route_info['fgcolor'] . ";'>Lijn ".$route_info['short_name']."</span> naar ".$trip_info['headsign'];
+    } else {
+        $page_header = "Lijn ".$route_info['short_name']." naar ".$trip_info['headsign'];
+    }
+    $trip_no = $trip_info['short_name'];
 
     $stop_list = get_stop_list($_GET['tid']);
     include __DIR__ . "/views/trip.php";

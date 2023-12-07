@@ -214,7 +214,10 @@ function html_trip_list($trip_list) {
     return $tl_str;
 }
 
-function get_route_info($route_id, $pdo) {
+function get_route_info($route_id, $pdo=null) {
+    if (!isset($pdo)) {
+        $pdo = connect_db();
+    }
     $stmt = $pdo->prepare("SELECT r.short_name, r.long_name, r.fgcolor, r.bgcolor, r.type, r.agency FROM Route r WHERE id = ?;");
     $stmt->execute([$route_id]);
     if ($stmt->rowCount() >= 1) {
@@ -225,8 +228,18 @@ function get_route_info($route_id, $pdo) {
 }
 
 
+function get_trip_info($tid) {
+    $pdo = connect_db();
+    $stmt = $pdo->prepare("SELECT * FROM Trip WHERE id = ?;");
+    $stmt->execute([$tid]);
+    if ($stmt->rowCount() == 1) {
+        return $stmt->fetch();
+    } else return false;
+}
+
+
 function get_stop_list($tid) {
-    return "<ul><li>Halte 1</li><li>Halte 2</li></ul>";
+
 }
 
 
