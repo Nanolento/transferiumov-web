@@ -94,6 +94,37 @@ elseif (new_route("/tov/trip", "get")) {
     $stop_list = get_stop_list($_GET['tid']);
     include __DIR__ . "/views/trip.php";
 }
+elseif (new_route("/tov/route", "get")) {
+    if (!isset($_GET['rid']) or !is_numeric($_GET['rid'])) {
+        http_response_code(400);
+        echo "400: Er moet een route-id gegeven worden en deze moet een getal zijn!";
+        die();
+    }
+    $route_info = get_route_info($_GET['rid']);
+    if (!$route_info) {
+        http_response_code(404);
+        echo "404: Deze route bestaat niet!";
+        die();
+    } elseif ($route_info['type'] == 2 or $route_info['type'] == 5) {
+        http_response_code(501);
+        echo "501: Sorry, deze pagina werkt niet op trein- of veerbootroutes.";
+        die();
+    }
+
+
+    $page_header = "Lijn ".$route_info['short_name'].": ".$route_info['long_name'];
+    $page_title = $page_header . " - TransferiumOV";
+
+    // $route_table are the rows in the table
+    // the table itself is already defined in the view.
+    $route_table = get_route_table($_GET['rid']);
+    if (!$route_table) {
+        http_response_code(500);
+        echo "500: Sorry, het is ons helaas niet gelukt de pagina klaar te maken.";
+        die();
+    }
+    include __DIR__ . "/views/route.php";
+}
 else {
     http_response_code(404);
     echo "404: Deze pagina bestaat niet. Helaas.";

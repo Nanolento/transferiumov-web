@@ -354,4 +354,47 @@ function get_routes($query) {
     return $resultsList;
 }
 
+function get_route_table($rid) {
+    $pdo = connect_db();
+    // get a trip that uses this route that happen today
+    $trip_stmt = $pdo->prepare("SELECT t.id FROM Trip t, CalendarDate cd ".
+        "WHERE t.service_id = cd.service_id AND cd.date = ? AND t.route_id = ?;");
+    $trip_stmt->execute([date("Y-m-d"), $rid]);
+    if ($trip_stmt->rowCount() == 0) {
+        return false;
+    }
+    $trips = $trip_stmt->fetchAll();
+    $stop_stmt = $pdo->prepare("SELECT s.id, s.name FROM Stop s, StopTime st WHERE ".
+        "st.stop_id = s.id AND st.trip_id = ?;");
+    $stop_stmt->execute([$trips[0]['id']]);
+    if ($stop_stmt->rowCount() == 0) {
+        return false;
+    }
+    $stops = $stop_stmt->fetchAll();
+    // obtain trip stop_times
+    $trip_times = Array();
+    foreach ($trips as $trip) {
+        $stmt = $pdo->prepare("SELECT st.depart_time, st.stop_id FROM StopTime st WHERE ".
+            "st.trip_id = ?;");
+        $stmt->execute([$trip['id']]);
+        array_push($trip_times, $stmt->fetchAll());
+    }
+    //echo "<td><pre>".json_encode($trip_times, JSON_PRETTY_PRINT)."</pre></td>";
+    //return true;
+    $table_rows = "";
+    foreach ($stops as $stop) {
+        // add stop name to table
+        $table_rows .= "<tr><td class='rt_stopname'>".$stop['name']."</td>";
+        // now, add stop times to table
+        foreach ($trip_times as $tript) {
+            foreach ($tript as $ttime) {
+                if ($ttime['stop_id'] == $stop['id']) {
+                    $table_rows .= "<td>" . substr($ttime['depart_time'], 0, 5) . "</td>";
+                }
+            }
+        }
+    }
+    return $table_rows;
+}
+
 ?>
