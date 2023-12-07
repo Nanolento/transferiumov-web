@@ -11,30 +11,35 @@ if (new_route("/tov/", "get")) {
 elseif (new_route("/tov/search", "get")) {
     // validate
     if (!isset($_GET['type']) or !isset($_GET['query'])) {
-        echo "Invalid query!";
+        http_response_code(400);
+        echo "De zoekopdracht klopt niet! Beide het zoektype en de zoekterm moet gegeven worden.";
         die();
     }
     $search_query = htmlspecialchars($_GET['query']);
 
-    $page_title = "Zoekresultaten: $search_query - TransferiumOV";
+
 
     if ($_GET['type'] != "stop" and $_GET['type'] != "route") {
-        echo "Invalid search type selected!";
+        http_response_code(400);
+        echo "Het geselecteerde zoektype bestaat niet!";
         die();
     } elseif ($_GET['type'] == "route" and !is_numeric($_GET['query'])) {
-        echo "The route query must be numeric!";
+        http_response_code(400);
+        echo "De zoekterm voor een lijn moet een getal zijn!";
         die();
     }
 
     if ($_GET['type'] == "stop") {
+        $page_title = "Zoekresultaten: $search_query - TransferiumOV";
         // execute
         $search_results = get_search_results($search_query);
         if (is_numeric($search_results)) {
             redirect("/tov/stop?sid=" . $search_results);
         }
     } else {
+        $page_title = "Zoekresultaten: Lijn $search_query - TransferiumOV";
         $search_results = get_routes($search_query);
-
+        if ($search_results == "") $search_results = "Geen zoekresultaten.";
     }
     // include view
     include __DIR__ . "/views/search.php";
@@ -42,12 +47,14 @@ elseif (new_route("/tov/search", "get")) {
 elseif (new_route("/tov/stop", "get")) {
     // validate
     if (!isset($_GET['sid']) or !is_numeric($_GET['sid'])) {
-        echo "Invalid data was given!";
+        http_response_code(400);
+        echo "Er moet een halte ID gegeven en deze moet een getal zijn!";
         die();
     }
     $stop_info = get_stop_info($_GET['sid']);
     if (!$stop_info or !isset($stop_info['name'])) {
-        echo "The stop does not exist!";
+        http_response_code(404);
+        echo "Deze halte bestaat niet!";
         die();
     }
     $page_title = "Halte ".$stop_info['name']." - TransferiumOV";
@@ -59,7 +66,8 @@ elseif (new_route("/tov/stop", "get")) {
 }
 elseif (new_route("/tov/trip", "get")) {
     if (!isset($_GET['tid']) or !is_numeric($_GET['tid'])) {
-        echo "Invalid data was given!";
+        http_response_code(400);
+        echo "Er moet een rit-id gegeven worden en deze moet een getal zijn!";
         die();
     }
     $trip_info = get_trip_info($_GET['tid']);
@@ -81,7 +89,7 @@ elseif (new_route("/tov/trip", "get")) {
 }
 else {
     http_response_code(404);
-    echo "Bad page";
+    echo "Deze pagina bestaat niet. Helaas.";
 }
 
 ?>
