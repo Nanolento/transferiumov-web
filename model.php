@@ -225,4 +225,9 @@ function get_route_info($route_id, $pdo) {
 }
 
 
+function get_stop_list($tid) {
+    return "<ul><li>Halte 1</li><li>Halte 2</li></ul>";
+}
+
+
 ?>

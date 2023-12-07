@@ -18,7 +18,7 @@ include __DIR__ . "/../templates/header.php";
     </p>
 </div>
 <div id="tripList">
-    <?= $stop_list ?>
+    <?= $trip_list ?>
 </div>
 <?php
 

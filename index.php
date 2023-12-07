@@ -41,7 +41,7 @@ elseif (new_route("/tov/stop", "get")) {
     }
     $page_title = "Halte ".$stop_info['name']." - TransferiumOV";
     // execute
-    $stop_list = get_trip_list($_GET['sid']);
+    $trip_list = get_trip_list($_GET['sid']);
 
     // include view
     include __DIR__ . "/views/stop.php";
@@ -55,7 +55,7 @@ elseif (new_route("/tov/trip", "get")) {
     $page_header = "<span style='background-color: #00aa00;color:white;'>Lijn 1</span> naar P+R Reitdiep";
     $trip_no = "1657";
 
-    $tri
+    $stop_list = get_stop_list($_GET['tid']);
     include __DIR__ . "/views/trip.php";
 }
 else {
