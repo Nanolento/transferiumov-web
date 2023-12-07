@@ -104,16 +104,13 @@ function get_stop_list($sid) {
     $routes = Array();
     $trip_list_exp = Array();
     foreach ($trip_list as $trip) {
-        if (array_key_exists($trip['route_id'], $routes)) {
-            $trip['route'] = $routes[$trip['route_id']];
-            array_push($trip_list_exp, $trip);
-        } else {
+        if (!array_key_exists($trip['route_id'], $routes)) {
             $routes += Array(
                 $trip['route_id'] => get_route_info($trip['route_id'], $pdo)
             );
-            $trip['route'] = $routes[$trip['route_id']];
-            array_push($trip_list_exp, $trip);
         }
+        $trip['route'] = $routes[$trip['route_id']];
+        array_push($trip_list_exp, $trip);
     }
     return json_encode($trip_list_exp, JSON_PRETTY_PRINT);
 }
