@@ -41,10 +41,22 @@ elseif (new_route("/tov/stop", "get")) {
     }
     $page_title = "Halte ".$stop_info['name']." - TransferiumOV";
     // execute
-    $stop_list = get_stop_list($_GET['sid']);
+    $stop_list = get_trip_list($_GET['sid']);
 
     // include view
     include __DIR__ . "/views/stop.php";
+}
+elseif (new_route("/tov/trip", "get")) {
+    if (!isset($_GET['tid']) or !is_numeric($_GET['tid'])) {
+        echo "Invalid data was given!";
+        die();
+    }
+    $page_title = "Informatie over rit - TransferiumOV";
+    $page_header = "<span style='background-color: #00aa00;color:white;'>Lijn 1</span> naar P+R Reitdiep";
+    $trip_no = "1657";
+
+    $tri
+    include __DIR__ . "/views/trip.php";
 }
 else {
     http_response_code(404);

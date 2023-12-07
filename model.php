@@ -85,7 +85,7 @@ function get_stop_info($sid) {
     }
 }
 
-function get_stop_list($sid) {
+function get_trip_list($sid) {
     // Get trips from db
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT st.stop_headsign, ".
@@ -190,16 +190,16 @@ function html_trip_list($trip_list) {
         // color elems
         if (isset($trip['route']['fgcolor']) and isset($trip['route']['bgcolor'])
             and $trip['route']['fgcolor'] != "NULL" and $trip['route']['bgcolor'] != "NULL") {
-            $style_str = " style='background-color: #".$trip['route']['bgcolor']."50;'";
-            $style_sn_str = " style='color: #".$trip['route']['fgcolor'].";".
+            $style_str = "style='background-color: #".$trip['route']['bgcolor']."50;'";
+            $style_sn_str = "style='color: #".$trip['route']['fgcolor'].";".
                 "background-color: #".$trip['route']['bgcolor'].";'";
         } else {
-            $style_str = " style='background-color: #dddddd40;'";
-            $style_sn_str = " style='background-color: #dddddd64;'";
+            $style_str = "style='background-color: #dddddd40;'";
+            $style_sn_str = "style='background-color: #dddddd64;'";
         }
         // create html
         $tl_str .= "<div class='searchResult'>
-        <div class='tl_top'".$style_str.">
+        <div class='tl_top' ".$style_str.">
             <p class='tl_deptime'>".substr($trip['depart_time'],0,5)."</p>
             <p class='tl_shortname' ".$style_sn_str.">".$trip['route']['short_name']."</p>
             <a class='tl_destname' href='".$dest_link."'>".$headsign."</a>
