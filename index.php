@@ -24,6 +24,9 @@ elseif (new_route("/tov/search", "get")) {
     }
     // execute
     $search_results = get_search_results($search_query);
+    if (is_numeric($search_results)) {
+        redirect("/tov/stop?sid=".$search_results);
+    }
 
     // include view
     include __DIR__ . "/views/search.php";

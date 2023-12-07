@@ -53,7 +53,10 @@ function get_search_results($query) {
     $stmt = $pdo->prepare("SELECT * FROM Stop WHERE name LIKE ?;");
     $stmt->execute(["%".$query."%"]);
     $result_count = $stmt->rowCount();
-    if ($result_count > 0) {
+    if ($result_count == 1) {
+        return $stmt->fetch()['id'];
+    }
+    elseif ($result_count > 0) {
         $resultsList = $result_count . " zoekresultaten";
         $results = $stmt->fetchAll();
         foreach ($results as $result) {
