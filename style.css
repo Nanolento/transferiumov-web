@@ -201,7 +201,7 @@ header {
 }
 
 #tl_controls {
-    display: none;
+    display: flex;
     justify-content: space-between;
 }
 
