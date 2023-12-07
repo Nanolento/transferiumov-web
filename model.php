@@ -86,7 +86,19 @@ function get_stop_info($sid) {
 }
 
 function get_stop_list($sid) {
-    return "Hello";
+    $pdo = connect_db();
+    $stmt = $pdo->prepare("SELECT st.stop_headsign, st.arrival_time, ".
+                          "st.depart_time, st.trip_id, st.platform_code, ".
+                          "t.realtime_id, t.headsign, ".
+                          "t.direction_id, ".
+                          "t.wheelchair_allowed, t.bikes_allowed, r.fgcolor, r.bgcolor, ".
+                          "r.short_name, r.long_name, r.type ".
+                          "FROM StopTime st, Trip t, Route r, CalendarDate cd WHERE ".
+                          "t.id = st.trip_id AND r.id = t.route_id AND ".
+                          "cd.service_id = t.service_id AND ".
+                          "cd.date = '2023-12-7' AND st.arrival_time > '12:00:00' AND st.stop_id = ? LIMIT 50;");
+    $stmt->execute([$sid]);
+    return json_encode($stmt->fetchAll(), JSON_PRETTY_PRINT);
 }
 
 ?>
