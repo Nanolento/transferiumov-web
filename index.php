@@ -12,7 +12,7 @@ elseif (new_route("/tov/search", "get")) {
     // validate
     if (!isset($_GET['type']) or !isset($_GET['query'])) {
         http_response_code(400);
-        echo "400: De zoekopdracht klopt niet! Beide het zoektype en de zoekterm moet gegeven worden.";
+        echo "400: De zoekopdracht klopt niet! Beide het zoektype en de zoekterm moeten gegeven worden.";
         die();
     }
     $search_query = htmlspecialchars($_GET['query']);
@@ -50,7 +50,7 @@ elseif (new_route("/tov/stop", "get")) {
     // validate
     if (!isset($_GET['sid']) or !is_numeric($_GET['sid'])) {
         http_response_code(400);
-        echo "400: Er moet een halte ID gegeven en deze moet een getal zijn!";
+        echo "400: Er moet een halte-id gegeven worden en deze moet een getal zijn!";
         die();
     }
     $stop_info = get_stop_info($_GET['sid']);
