@@ -90,15 +90,44 @@ function get_stop_list($sid) {
     $stmt = $pdo->prepare("SELECT st.stop_headsign, st.arrival_time, ".
                           "st.depart_time, st.trip_id, st.platform_code, ".
                           "t.realtime_id, t.headsign, ".
-                          "t.direction_id, ".
-                          "t.wheelchair_allowed, t.bikes_allowed, r.fgcolor, r.bgcolor, ".
-                          "r.short_name, r.long_name, r.type ".
-                          "FROM StopTime st, Trip t, Route r, CalendarDate cd WHERE ".
-                          "t.id = st.trip_id AND r.id = t.route_id AND ".
+                          "t.direction_id, t.route_id, ".
+                          "t.wheelchair_allowed ".
+                          "FROM StopTime st, Trip t, CalendarDate cd WHERE ".
+                          "t.id = st.trip_id AND ".
                           "cd.service_id = t.service_id AND ".
                           "cd.date = '2023-12-7' AND st.arrival_time > '12:00:00' AND st.stop_id = ? LIMIT 50;");
     $stmt->execute([$sid]);
-    return json_encode($stmt->fetchAll(), JSON_PRETTY_PRINT);
+    if ($stmt->rowCount() < 1) {
+        return "Deze halte bestaat niet, of er zijn geen ritten vandaag.";
+    }
+    $trip_list = $stmt->fetchAll();
+    $routes = Array();
+    $trip_list_exp = Array();
+    foreach ($trip_list as $trip) {
+        if (array_key_exists($trip['route_id'], $routes)) {
+            $trip['route'] = $routes[$trip['route_id']];
+            array_push($trip_list_exp, $trip);
+        } else {
+            $routes += Array(
+                $trip['route_id'] => get_route_info($trip['route_id'], $pdo)
+            );
+            $trip['route'] = $routes[$trip['route_id']];
+            array_push($trip_list_exp, $trip);
+        }
+    }
+    return json_encode($trip_list_exp, JSON_PRETTY_PRINT);
 }
+
+
+function get_route_info($route_id, $pdo) {
+    $stmt = $pdo->prepare("SELECT r.short_name, r.fgcolor, r.bgcolor, r.type FROM Route r WHERE id = ?;");
+    $stmt->execute([$route_id]);
+    if ($stmt->rowCount() >= 1) {
+        return $stmt->fetch();
+    } else {
+        return false;
+    }
+}
+
 
 ?>
