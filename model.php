@@ -86,6 +86,7 @@ function get_stop_info($sid) {
 }
 
 function get_stop_list($sid) {
+    // Get trips from db
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT st.stop_headsign, st.arrival_time, ".
                           "st.depart_time, st.trip_id, st.platform_code, ".
@@ -95,11 +96,12 @@ function get_stop_list($sid) {
                           "FROM StopTime st, Trip t, CalendarDate cd WHERE ".
                           "t.id = st.trip_id AND ".
                           "cd.service_id = t.service_id AND ".
-                          "cd.date = '2023-12-7' AND st.arrival_time > '12:00:00' AND st.stop_id = ? LIMIT 50;");
-    $stmt->execute([$sid]);
-    if ($stmt->rowCount() < 1) {
-        return "Deze halte bestaat niet, of er zijn geen ritten vandaag.";
-    }
+                          "cd.date = ? AND st.depart_time > ? AND ".
+                          "st.depart_time < ? AND st.stop_id = ?;");
+    // Execute this statement but only retrieve trips from now until 3 hours in future
+    $stmt->execute([date("Y-m-d"), date("H:i:s"),
+        (intval(date("H")) + 3).date(":i:s"), $sid]);
+    // Add routes to the list
     $trip_list = $stmt->fetchAll();
     $routes = Array();
     $trip_list_exp = Array();
@@ -112,12 +114,87 @@ function get_stop_list($sid) {
         $trip['route'] = $routes[$trip['route_id']];
         array_push($trip_list_exp, $trip);
     }
-    return json_encode($trip_list_exp, JSON_PRETTY_PRINT);
+    // Sort the array so earlier trips come first.
+    usort($trip_list_exp, function($i1, $i2) {
+        return $i1['depart_time'] <=> $i2['depart_time'];
+    });
+    // Convert the trip list array to a nice HTML view
+    // equivalent to addStopTimesToTripList in main.js
+    // return it because that is what we want
+    return html_trip_list($trip_list_exp);
+    //return json_encode($trip_list_exp, JSON_PRETTY_PRINT);
 }
 
+$agency_nice_names = Array(
+    "IFF:EB" => "Eurobahn",
+    "IFF:VALLEI" => "Valleilijn",
+    "HTM" => "HTM",
+    "BRENG" => "Breng",
+    "KEOLIS" => "Keolis",
+    "TEXELHOPPER" => "Texelhopper",
+    "ALLGO" => "allGo (Keolis)",
+    "IFF:NSI" => "NS International",
+    "FF" => "Westerschelde Ferry",
+    "BRAVO:ARR" => "Bravo (Arriva)",
+    "SYNTUS:UT" => "Syntus Utrecht",
+    "BLUEAMIGO" => "Blue Amigo",
+    "TRANSDEV" => "Transdev",
+    "HERMES" => "Hermes",
+    "IFF:ES" => "EU Sleeper",
+    "IFF:RET" => "RET",
+    "TWENTS" => "Twents (Keolis)",
+    "IFF:ARRIVA" => "Arriva",
+    "BRAVO:CXX" => "Bravo (Hermes)",
+    "IFF:DB" => "Deutsche Bahn",
+    "OVREGIOY" => "OV Regio IJsselmond",
+    "CXX" => "Connexxion",
+    "UOV" => "U-OV",
+    "QBUZZ" => "Qbuzz",
+    "IFF:BN" => "Blauwnet",
+    "ARR" => "Arriva",
+    "IFF:VIAS" => "VIAS",
+    "EBS" => "EBS",
+    "IFF:RNET" => "R-net",
+    "IFF:NS" => "NS",
+    "IFF:NMBS" => "NMBS",
+    "OVERAL" => "Overal (Connexxion)",
+    "GVB" => "GVB",
+    "DELIJN" => "De Lijn",
+    "NIAG" => "NIAG",
+    "RET" => "RET",
+    "IFF:BRENG" => "Breng"
+);
+
+function html_trip_list($trip_list) {
+    $tl_str = "";
+    foreach ($trip_list as $trip) {
+        // Use stop headsign or trip headsign
+        if ($trip['stop_headsign'] != "") {
+            $headsign = $trip['stop_headsign'];
+        }
+        else {
+            $headsign = $trip['headsign'];
+        }
+        // get nice name for agency
+        global $agency_nice_names;
+        $agency = $agency_nice_names[$trip['route']['agency']];
+        // create html
+        $tl_str .= "<div class='searchResult'>
+        <div class='tl_top'>
+            <p class='tl_deptime'>".substr($trip['depart_time'],0,5)."</p>
+            <p class='tl_shortname'>".$trip['route']['short_name']."</p>
+            <a class='tl_destname'>".$headsign."</a>
+        </div>
+        <div class='tl_bottom'>
+            <p class='tl_agency'>".$agency."</p>
+        </div>
+        </div>";
+    }
+    return $tl_str;
+}
 
 function get_route_info($route_id, $pdo) {
-    $stmt = $pdo->prepare("SELECT r.short_name, r.fgcolor, r.bgcolor, r.type FROM Route r WHERE id = ?;");
+    $stmt = $pdo->prepare("SELECT r.short_name, r.fgcolor, r.bgcolor, r.type, r.agency FROM Route r WHERE id = ?;");
     $stmt->execute([$route_id]);
     if ($stmt->rowCount() >= 1) {
         return $stmt->fetch();

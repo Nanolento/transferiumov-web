@@ -3,9 +3,6 @@
 include __DIR__ . "/../templates/header.php";
 
 ?>
-<noscript>Je hebt JavaScript nodig om OVbuzz te gebruiken!
-Check of JavaScript aan staat in je browser of dat
-je browser het ondersteunt.<br></noscript>
 <h2 class="tl_header" id="tl_head"><?= $stop_info['name'] ?></h2>
 
 <div id="tl_controls">
@@ -18,7 +15,7 @@ je browser het ondersteunt.<br></noscript>
     </p>
 </div>
 <div id="tripList">
-    <pre><?= $stop_list ?></pre>
+    <?= $stop_list ?>
 </div>
 <?php
 
