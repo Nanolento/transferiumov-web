@@ -56,7 +56,6 @@ elseif (new_route("/tov/trip", "get")) {
     }
     $trip_info = get_trip_info($_GET['tid']);
     $route_info = get_route_info($trip_info['route_id']);
-    $page_title = "Informatie over rit - TransferiumOV";
     if ($route_info['bgcolor'] != "NULL" and $route_info['fgcolor'] != "NULL") {
         $page_header = "<span style='background-color: #" . $route_info['bgcolor'] . ";color: #" .
             $route_info['fgcolor'] . ";'>Lijn ".$route_info['short_name']."</span> naar ".$trip_info['headsign'];
@@ -66,6 +65,7 @@ elseif (new_route("/tov/trip", "get")) {
         } else $page_header = "";
         $page_header .= $route_info['short_name']." naar ".$trip_info['headsign'];
     }
+    $page_title = $page_header." - TransferiumOV";
     $trip_no = $trip_info['short_name'];
 
     $stop_list = get_stop_list($_GET['tid']);

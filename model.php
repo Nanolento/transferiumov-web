@@ -170,7 +170,11 @@ $agency_nice_names = Array(
 
 function html_trip_list($trip_list) {
     $tl_str = "<p>".count($trip_list)." ritten in de komende 3 uren</p>";
+    $train_style = false; // this bool indicates if the styling needs to adapt for trains
     foreach ($trip_list as $trip) {
+        if (!$train_style and ($trip['route']['type'] == 2 or $trip['route']['type'] == 4)) {
+            $train_style = true;
+        }
         // Use stop headsign or trip headsign
         if ($trip['stop_headsign'] != "") {
             $headsign = $trip['stop_headsign'];
@@ -181,6 +185,7 @@ function html_trip_list($trip_list) {
         // get nice name for agency
         global $agency_nice_names;
         $agency = $agency_nice_names[$trip['route']['agency']];
+
         // get route type
         if ($trip['long_name'] != "") {
             $type_str = $trip['long_name'];
@@ -203,16 +208,19 @@ function html_trip_list($trip_list) {
         // create html
         $tl_str .= "<div class='searchResult'>
         <div class='tl_top' ".$style_str.">
-            <p class='tl_deptime'>".substr($trip['depart_time'],0,5)."</p>
-            <p class='tl_shortname' ".$style_sn_str.">".$trip['route']['short_name']."</p>
-            <a class='tl_destname' href='".$dest_link."'>".$headsign."</a>
+            <p class='tl_deptime'>".substr($trip['depart_time'],0,5)."</p>";
+        if (!$train_style) $tl_str .= "<p class='tl_shortname' ".$style_sn_str.">".$trip['route']['short_name']."</p>";
+        $tl_str .= "<a class='tl_destname' href='".$dest_link."'>".$headsign."</a>
             <p class='tl_platform'>".$trip['platform_code']."</p>
         </div>
         <div class='tl_bottom'>
-            <p class='tl_agency'>".$agency."</p>
-            <p class='tl_type'>".$type_str."</p>
-        </div>
-        </div>";
+            <p class='tl_agency'>".$agency."</p>";
+        if (!$train_style) {
+            $tl_str .= "<p class='tl_type'>".$type_str."</p>";
+        } else {
+            $tl_str .= "<p class='tl_type'>".$trip['route']['short_name']."</p>";
+        }
+        $tl_str .= "</div></div>";
     }
     return $tl_str;
 }
