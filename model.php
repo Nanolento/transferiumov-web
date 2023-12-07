@@ -242,8 +242,45 @@ function get_trip_info($tid) {
 
 
 function get_stop_list($tid) {
-
+    $pdo = connect_db();
+    $stmt = $pdo->prepare("SELECT st.arrival_time, st.depart_time, st.stop_id, st.stop_seq, s.name".
+                          " FROM StopTime st, Stop s WHERE st.stop_id = s.id AND st.trip_id = ?;");
+    $stmt->execute([$tid]);
+    if ($stmt->rowCount() >= 1) {
+        $stop_list = $stmt->fetchAll();
+        usort($stop_list, function($i1, $i2) {
+            return $i1['arrival_time'] <=> $i2['arrival_time'];
+        });
+        return html_stop_list($stop_list);
+    } else return "";
 }
 
+
+function html_stop_list($stop_list) {
+    $sl_str = "<table class='sl_table'><tr><th>Aankomst</th><th>Vertrek</th><th>Halte</th><th>Plaats</th></tr>";
+    foreach ($stop_list as $stop) {
+        // times, if arrival=depart only show depart
+        if ($stop['depart_time'] == $stop['arrival_time']) {
+            $depart_time = substr($stop['depart_time'], 0, 5);
+            $arrival_time = "";
+        } else {
+            $depart_time = substr($stop['depart_time'], 0, 5);
+            $arrival_time = substr($stop['arrival_time'], 0, 5);
+        }
+
+        // stop name
+        if (($pos = strpos($stop['name'], ",")) !== false) {
+            $sname = substr($stop['name'], $pos + 2);
+            $place_name = substr($stop['name'], 0, $pos);
+        } else {
+            $sname = $stop['name'];
+            $place_name = "";
+        }
+        $sl_str .= "<tr><td class='sl_time'>".$arrival_time."</td><td class='sl_time'>".$depart_time."</td><td>".
+        $sname."</td><td>".$place_name."</td></tr>";
+    }
+    $sl_str .= "</table>";
+    return $sl_str;
+}
 
 ?>

@@ -7,7 +7,7 @@ include __DIR__ . "/../templates/header.php";
 <div id="stopList">
     <?= $stop_list ?>
 </div>
-
+<p>Wanneer de aankomsttijd niet is gegeven, is deze gelijk aan de vertrektijd.</p>
 <?php
 include __DIR__ . "/../templates/footer.php";
 ?>

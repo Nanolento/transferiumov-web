@@ -216,3 +216,26 @@ header {
 #tl_tripcount {
     margin: 1em;
 }
+
+.sl_table {
+    width: 100%;
+    border-spacing: 0.2em;
+}
+
+.sl_table th {
+    text-align: left;
+}
+
+.sl_table td {
+    background-color: white;
+    padding: 0.4em;
+}
+
+.sl_time {
+    width: 5em;
+    text-align: center;
+}
+
+.sl_table tr:nth-child(odd) > td {
+    background-color: #f8f8f8;
+}

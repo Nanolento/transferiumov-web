@@ -61,7 +61,10 @@ elseif (new_route("/tov/trip", "get")) {
         $page_header = "<span style='background-color: #" . $route_info['bgcolor'] . ";color: #" .
             $route_info['fgcolor'] . ";'>Lijn ".$route_info['short_name']."</span> naar ".$trip_info['headsign'];
     } else {
-        $page_header = "Lijn ".$route_info['short_name']." naar ".$trip_info['headsign'];
+        if ($route_info['type'] != 2 and $route_info['type'] != 4) {
+            $page_header = "Lijn ";
+        } else $page_header = "";
+        $page_header .= $route_info['short_name']." naar ".$trip_info['headsign'];
     }
     $trip_no = $trip_info['short_name'];
 
