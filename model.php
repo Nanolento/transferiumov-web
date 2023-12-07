@@ -184,7 +184,8 @@ $agency_nice_names = Array(
     "DELIJN" => "De Lijn",
     "NIAG" => "NIAG",
     "RET" => "RET",
-    "IFF:BRENG" => "Breng"
+    "IFF:BRENG" => "Breng",
+    "ARR:Branding:RRReis#TW:P65" => "RRReis (Arriva)"
 );
 
 /**
@@ -334,6 +335,23 @@ function html_stop_list($stop_list) {
     }
     $sl_str .= "</table>";
     return $sl_str;
+}
+
+function get_routes($query) {
+    $pdo = connect_db();
+    $stmt = $pdo->prepare("SELECT * FROM Route WHERE short_name = ?;");
+    $stmt->execute([$query]);
+    $results = $stmt->fetchAll();
+    global $agency_nice_names;
+    $resultsList = "";
+    foreach ($results as $result) {
+        $agency = $agency_nice_names[$result['agency']];
+        $resultElem = "<div class='searchResult'>
+        <a href='route?rid=".$result['id']."'>Lijn ".$result['short_name']." van ".$agency."</a>
+        <p>".$result["long_name"]."</p></div>";
+        $resultsList .= $resultElem;
+    }
+    return $resultsList;
 }
 
 ?>

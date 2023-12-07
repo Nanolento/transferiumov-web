@@ -39,7 +39,8 @@ const agencyNiceNames = {
     "DELIJN": "De Lijn",
     "NIAG": "NIAG",
     "RET": "RET",
-    "IFF:BRENG": "Breng"
+    "IFF:BRENG": "Breng",
+    "ARR:Branding:RRReis#TW:P65": "RRReis (Arriva)"
 };
 
 
@@ -160,21 +161,24 @@ $(function() {
         location.reload();
     });
     $("#query").keyup(function(event) {
-        if ($("#query").val().length < 3) {
+        if ($("#query").val().length < 3 && $("#searchOption").val() == "stop") {
             $("#searchBtn").prop("disabled", true);
-        } else {
+        } else if ($("#query").val().length != 0) {
             $("#searchBtn").prop("disabled", false);
+        } else {
+            $("#searchBtn").prop("disabled", true);
         }
         
     });
 
-    if (location.href.includes("stop")) {
-        //populateTrips();
-    }
-    else {
-        $("#content").css({
-            "padding": "1em"
-        });
+    if (location.href.includes("search")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get("type");
+        if (searchParam == "route") {
+            $("#searchOption").val("route");
+        } else {
+            $("#searchOption").val("stop");
+        }
     }
     if (location.href.includes("trip.htm")) {
         getTripInfo();

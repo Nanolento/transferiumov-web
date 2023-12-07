@@ -18,16 +18,24 @@ elseif (new_route("/tov/search", "get")) {
 
     $page_title = "Zoekresultaten: $search_query - TransferiumOV";
 
-    if ($_GET['type'] != "stop") {
-        echo "This search type is not yet available";
-        redirect("https://www.qbuzz.nl/gd");
-    }
-    // execute
-    $search_results = get_search_results($search_query);
-    if (is_numeric($search_results)) {
-        redirect("/tov/stop?sid=".$search_results);
+    if ($_GET['type'] != "stop" and $_GET['type'] != "route") {
+        echo "Invalid search type selected!";
+        die();
+    } elseif ($_GET['type'] == "route" and !is_numeric($_GET['query'])) {
+        echo "The route query must be numeric!";
+        die();
     }
 
+    if ($_GET['type'] == "stop") {
+        // execute
+        $search_results = get_search_results($search_query);
+        if (is_numeric($search_results)) {
+            redirect("/tov/stop?sid=" . $search_results);
+        }
+    } else {
+        $search_results = get_routes($search_query);
+
+    }
     // include view
     include __DIR__ . "/views/search.php";
 }
