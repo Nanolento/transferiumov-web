@@ -6,15 +6,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-/**
- * Useless function that says hello
- * @return void
- */
-function say_hello() {
-    echo "Hello!";
-}
-
 /**
  * Check if the route exists
  * @param string $route_uri URI to be matched
@@ -32,6 +23,10 @@ function new_route($route_uri, $request_type){
     }
 }
 
+/**
+ * Connects to the DB, returns the PDO object
+ * @return PDO|void PDO if successful, stops execution if not
+ */
 function connect_db() {
     $charset = "utf8mb4";
     $dsn = "mysql:host=localhost;dbname=ovbuzz;charset=$charset";
@@ -40,6 +35,7 @@ function connect_db() {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ];
     try {
+        // Please specify your username and password here.
         $pdo = new PDO($dsn, "jelmer", "1234", $options);
         return $pdo;
     } catch (PDOException $e) {
@@ -48,6 +44,11 @@ function connect_db() {
     }
 }
 
+/**
+ * Looks up stops based on the given query and returns HTML for displaying search results.
+ * @param string $query The search query to use
+ * @return string HTML for displaying search results.
+ */
 function get_search_results($query) {
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT * FROM Stop WHERE name LIKE ?;");
@@ -71,12 +72,22 @@ function get_search_results($query) {
     }
 }
 
+/**
+ * Redirects the browser to a different location.
+ * @param string $location Location to redirect to
+ * @return void
+ */
 function redirect($location){
     header(sprintf('Location: %s', $location));
     die();
 }
 
 
+/**
+ * Retrieves information about one stop.
+ * @param int $sid The stop id to look up info for.
+ * @return array An associative array with info about the stop.
+ */
 function get_stop_info($sid) {
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT * FROM Stop WHERE id = ?");
@@ -88,6 +99,11 @@ function get_stop_info($sid) {
     }
 }
 
+/**
+ * Looks up trips that call at the given stop and calls html_trip_list() to create HTML for it.
+ * @param int $sid The stop id to get trips for.
+ * @return string HTML for displaying the stop list.
+ */
 function get_trip_list($sid) {
     // Get trips from db
     $pdo = connect_db();
@@ -128,6 +144,9 @@ function get_trip_list($sid) {
     //return json_encode($trip_list_exp, JSON_PRETTY_PRINT);
 }
 
+/**
+ * A lookup table that contains the user-friendly names of agencies compared to their in-database stored names.
+ */
 $agency_nice_names = Array(
     "IFF:EB" => "Eurobahn",
     "IFF:VALLEI" => "Valleilijn",
@@ -168,6 +187,12 @@ $agency_nice_names = Array(
     "IFF:BRENG" => "Breng"
 );
 
+/**
+ * Creates HTML for displaying a given trip list.
+ * get_trip_list() calls this function.
+ * @param array $trip_list The associative array with trip information.
+ * @return string HTML that displays a list of trips.
+ */
 function html_trip_list($trip_list) {
     $tl_str = "<p>".count($trip_list)." ritten in de komende 3 uren</p>";
     $train_style = false; // this bool indicates if the styling needs to adapt for trains
@@ -225,6 +250,12 @@ function html_trip_list($trip_list) {
     return $tl_str;
 }
 
+/**
+ * Retrieves information about a route.
+ * @param int $route_id The route ID to look up information for.
+ * @param PDO $pdo The database connection to use.
+ * @return false|array False if no route was found, else an associative array with info about the route.
+ */
 function get_route_info($route_id, $pdo=null) {
     if (!isset($pdo)) {
         $pdo = connect_db();
@@ -238,7 +269,11 @@ function get_route_info($route_id, $pdo=null) {
     }
 }
 
-
+/**
+ * Retrieves information about a trip
+ * @param int $tid The trip ID to look up information for.
+ * @return false|array False if no trip was found, else an associative array with info about the trip.
+ */
 function get_trip_info($tid) {
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT * FROM Trip WHERE id = ?;");
@@ -248,7 +283,12 @@ function get_trip_info($tid) {
     } else return false;
 }
 
-
+/**
+ * Creates a list of stops a trip calls at.
+ * Uses html_stop_list() to generate nice HTML.
+ * @param int $tid Trip ID to generate a stop list for.
+ * @return string HTML to display a stop list
+ */
 function get_stop_list($tid) {
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT st.arrival_time, st.depart_time, st.stop_id, st.stop_seq, s.name".
@@ -263,7 +303,12 @@ function get_stop_list($tid) {
     } else return "";
 }
 
-
+/**
+ * Generates HTML for displaying a stop list.
+ * Used by get_stop_list().
+ * @param array $stop_list The stop list to use when genearting the HTML.
+ * @return string HTML to display a nice stop list.
+ */
 function html_stop_list($stop_list) {
     $sl_str = "<table class='sl_table'><tr><th>Aankomst</th><th>Vertrek</th><th>Halte</th><th>Plaats</th></tr>";
     foreach ($stop_list as $stop) {
