@@ -277,7 +277,7 @@ function html_stop_list($stop_list) {
             $place_name = "";
         }
         $sl_str .= "<tr><td class='sl_time'>".$arrival_time."</td><td class='sl_time'>".$depart_time."</td><td>".
-        $sname."</td><td>".$place_name."</td></tr>";
+        "<a href='/tov/stop?sid=".$stop['stop_id']."'>".$sname."</a></td><td>".$place_name."</td></tr>";
     }
     $sl_str .= "</table>";
     return $sl_str;

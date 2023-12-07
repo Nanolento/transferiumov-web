@@ -157,7 +157,7 @@ header {
     height: 80vh;
 }
 
-.sl_name > a, .sl_placename {
+.sl_name > a {
     color: black;
     text-decoration: none;
     margin: 0.2em 0.5em;
@@ -196,10 +196,6 @@ header {
     background-color: #ffffcc;
 }
 
-.sl_placename {
-    color: #666;
-}
-
 #tl_controls {
     display: flex;
     justify-content: space-between;
@@ -229,6 +225,11 @@ header {
 .sl_table td {
     background-color: white;
     padding: 0.4em;
+}
+
+.sl_table td > a {
+    color: black;
+    text-decoration: none;
 }
 
 .sl_time {
