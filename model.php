@@ -88,11 +88,11 @@ function get_stop_info($sid) {
 function get_stop_list($sid) {
     // Get trips from db
     $pdo = connect_db();
-    $stmt = $pdo->prepare("SELECT st.stop_headsign, st.arrival_time, ".
+    $stmt = $pdo->prepare("SELECT st.stop_headsign, ".
                           "st.depart_time, st.trip_id, st.platform_code, ".
                           "t.realtime_id, t.headsign, ".
                           "t.direction_id, t.route_id, ".
-                          "t.wheelchair_allowed ".
+                          "t.wheelchair_allowed, t.long_name ".
                           "FROM StopTime st, Trip t, CalendarDate cd WHERE ".
                           "t.id = st.trip_id AND ".
                           "cd.service_id = t.service_id AND ".
@@ -166,7 +166,7 @@ $agency_nice_names = Array(
 );
 
 function html_trip_list($trip_list) {
-    $tl_str = "";
+    $tl_str = "<p>".count($trip_list)." ritten in de komende 3 uren</p>";
     foreach ($trip_list as $trip) {
         // Use stop headsign or trip headsign
         if ($trip['stop_headsign'] != "") {
@@ -178,15 +178,36 @@ function html_trip_list($trip_list) {
         // get nice name for agency
         global $agency_nice_names;
         $agency = $agency_nice_names[$trip['route']['agency']];
+        // get route type
+        if ($trip['long_name'] != "") {
+            $type_str = $trip['long_name'];
+        } else {
+            $route_types = ["Tram", "Metro", "Trein", "Bus", "Veerboot"];
+            $type_str = $route_types[$trip['route']['type']];
+        }
+        // create link
+        $dest_link = "/tov/trip?tid=".$trip['trip_id'];
+        // color elems
+        if (isset($trip['route']['fgcolor']) and isset($trip['route']['bgcolor'])
+            and $trip['route']['fgcolor'] != "NULL" and $trip['route']['bgcolor'] != "NULL") {
+            $style_str = " style='background-color: #".$trip['route']['bgcolor']."50;'";
+            $style_sn_str = " style='color: #".$trip['route']['fgcolor'].";".
+                "background-color: #".$trip['route']['bgcolor'].";'";
+        } else {
+            $style_str = " style='background-color: #dddddd40;'";
+            $style_sn_str = " style='background-color: #dddddd64;'";
+        }
         // create html
         $tl_str .= "<div class='searchResult'>
-        <div class='tl_top'>
+        <div class='tl_top'".$style_str.">
             <p class='tl_deptime'>".substr($trip['depart_time'],0,5)."</p>
-            <p class='tl_shortname'>".$trip['route']['short_name']."</p>
-            <a class='tl_destname'>".$headsign."</a>
+            <p class='tl_shortname' ".$style_sn_str.">".$trip['route']['short_name']."</p>
+            <a class='tl_destname' href='".$dest_link."'>".$headsign."</a>
+            <p class='tl_platform'>".$trip['platform_code']."</p>
         </div>
         <div class='tl_bottom'>
             <p class='tl_agency'>".$agency."</p>
+            <p class='tl_type'>".$type_str."</p>
         </div>
         </div>";
     }
@@ -194,7 +215,7 @@ function html_trip_list($trip_list) {
 }
 
 function get_route_info($route_id, $pdo) {
-    $stmt = $pdo->prepare("SELECT r.short_name, r.fgcolor, r.bgcolor, r.type, r.agency FROM Route r WHERE id = ?;");
+    $stmt = $pdo->prepare("SELECT r.short_name, r.long_name, r.fgcolor, r.bgcolor, r.type, r.agency FROM Route r WHERE id = ?;");
     $stmt->execute([$route_id]);
     if ($stmt->rowCount() >= 1) {
         return $stmt->fetch();
