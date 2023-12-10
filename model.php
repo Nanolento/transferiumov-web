@@ -392,7 +392,9 @@ function get_route_table($rid) {
                     $table_rows .= "<td>" . substr($ttime['depart_time'], 0, 5) . "</td>";
                 }
             }
+
         }
+        $table_rows .= "</tr>";
     }
     return $table_rows;
 }
