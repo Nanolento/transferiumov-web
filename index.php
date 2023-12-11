@@ -79,6 +79,7 @@ elseif (new_route("/tov/trip", "get")) {
         die();
     }
     $route_info = get_route_info($trip_info['route_id']);
+    // page header
     if ($route_info['bgcolor'] != "NULL" and $route_info['fgcolor'] != "NULL") {
         $page_header = "<span style='background-color: #" . $route_info['bgcolor'] . ";color: #" .
             $route_info['fgcolor'] . ";'>Lijn ".$route_info['short_name']."</span> naar ".$trip_info['headsign'];
@@ -88,7 +89,11 @@ elseif (new_route("/tov/trip", "get")) {
         } else $page_header = "";
         $page_header .= $route_info['short_name']." naar ".$trip_info['headsign'];
     }
-    $page_title = $page_header." - TransferiumOV";
+    // page title
+    if ($route_info['type'] != 2 and $route_info['type'] != 4) {
+        $page_title = "Lijn ";
+    } else $page_title = "";
+    $page_title .= $route_info['short_name']." naar ".$trip_info['headsign']." - TransferiumOV";
     $trip_no = $trip_info['short_name'];
 
     $stop_list = get_stop_list($_GET['tid']);

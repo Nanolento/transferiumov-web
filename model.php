@@ -109,6 +109,7 @@ function get_trip_list($sid) {
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT st.stop_headsign, ".
                           "st.depart_time, st.trip_id, st.platform_code, ".
+                          "st.pickup_type, ".
                           "t.realtime_id, t.headsign, ".
                           "t.direction_id, t.route_id, ".
                           "t.wheelchair_allowed, t.long_name ".
@@ -245,6 +246,9 @@ function html_trip_list($trip_list) {
             $tl_str .= "<p class='tl_type'>".$type_str."</p>";
         } else {
             $tl_str .= "<p class='tl_type'>".$trip['route']['short_name']."</p>";
+        }
+        if ($trip['pickup_type'] == 1) {
+            $tl_str .= "<p class='tl_problem'>Niet instappen</p>";
         }
         $tl_str .= "</div></div>";
     }

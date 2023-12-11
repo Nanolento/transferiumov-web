@@ -217,6 +217,11 @@ header {
     margin: 1em;
 }
 
+.tl_problem {
+    font-weight: bold;
+    color: #bc0000;
+}
+
 .sl_table {
     width: 100%;
     border-spacing: 0.2em;
