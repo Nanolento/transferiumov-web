@@ -140,6 +140,10 @@ elseif (new_route("/tov/route", "get")) {
     }
     include __DIR__ . "/views/route.php";
 }
+elseif (new_route("/tov/toekomst", "get")) {
+    $page_title = "De toekomst van TransferiumOV";
+    include __DIR__ . "/views/future.php";
+}
 else {
     http_response_code(404);
     echo "404: Deze pagina bestaat niet. Helaas.";
