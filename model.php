@@ -62,7 +62,7 @@ function get_search_results($query) {
         $results = $stmt->fetchAll();
         foreach ($results as $result) {
             $resultElem = "<div class='searchResult'>
-            <a href='stop?sid=".$result['id']."'>".$result['name']."</a>
+            <a href='halte?sid=".$result['id']."'>".$result['name']."</a>
             <p>Type: ".$result['loc_type'].", ID: ".$result['id']."</p></div>";
             $resultsList .= $resultElem;
         }
@@ -225,7 +225,7 @@ function html_trip_list($trip_list) {
             $type_str = $route_types[$trip['route']['type']];
         }
         // create link
-        $dest_link = "/tov/trip?tid=".$trip['trip_id'];
+        $dest_link = "/tov/rit?tid=".$trip['trip_id'];
         // color elems
         if (isset($trip['route']['fgcolor']) and isset($trip['route']['bgcolor'])
             and $trip['route']['fgcolor'] != "NULL" and $trip['route']['bgcolor'] != "NULL") {
@@ -341,7 +341,7 @@ function html_stop_list($stop_list) {
             $place_name = "";
         }
         $sl_str .= "<tr><td class='sl_time'>".$arrival_time."</td><td class='sl_time'>".$depart_time."</td><td>".
-        "<a href='/tov/stop?sid=".$stop['stop_id']."'>".$sname."</a></td><td>".$place_name."</td></tr>";
+        "<a href='/tov/halte?sid=".$stop['stop_id']."'>".$sname."</a></td><td>".$place_name."</td></tr>";
     }
     $sl_str .= "</table>";
     return $sl_str;
@@ -357,7 +357,7 @@ function get_routes($query) {
     foreach ($results as $result) {
         $agency = $agency_nice_names[$result['agency']];
         $resultElem = "<div class='searchResult'>
-        <a href='route?rid=".$result['id']."'>Lijn ".$result['short_name']." van ".$agency."</a>
+        <a href='lijn?rid=".$result['id']."'>Lijn ".$result['short_name']." van ".$agency."</a>
         <p>".$result["long_name"]."</p></div>";
         $resultsList .= $resultElem;
     }

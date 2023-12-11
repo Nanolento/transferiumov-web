@@ -20,7 +20,7 @@ include __DIR__ . "/../templates/header.php";
 <noscript>Sommige functionaliteiten van TransferiumOV kunnen mogelijk niet werken
 als je browser JavaScript niet ondersteunt of niet aan heeft staan.<br></noscript>
 
-<form action="/tov/search" method="get">
+<form action="/tov/zoeken" method="get">
     <select id="searchOption" name="type">
         <option value="stop" selected>Halte/station</option>
         <option value="route">Lijn</option>

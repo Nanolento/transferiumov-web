@@ -5,7 +5,7 @@ include __DIR__ . "/../templates/header.php";
 ?>
 
 <h1>Zoekresultaten</h1>
-<form action="/tov/search" method="get">
+<form action="/tov/zoeken" method="get">
     <select id="searchOption" name="type">
         <option value="stop">Halte/station</option>
         <option value="route">Lijn</option>

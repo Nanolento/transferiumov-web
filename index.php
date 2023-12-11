@@ -8,7 +8,7 @@ if (new_route("/tov/", "get")) {
     $page_title = "TransferiumOV";
     include __DIR__ . "/views/main.php";
 }
-elseif (new_route("/tov/search", "get")) {
+elseif (new_route("/tov/zoeken", "get")) {
     // validate
     if (!isset($_GET['type']) or !isset($_GET['query'])) {
         http_response_code(400);
@@ -36,7 +36,7 @@ elseif (new_route("/tov/search", "get")) {
         // execute
         $search_results = get_search_results($search_query);
         if (is_numeric($search_results)) {
-            redirect("/tov/stop?sid=" . $search_results);
+            redirect("/tov/halte?sid=" . $search_results);
         }
     } else {
         $page_title = "Zoekresultaten: Lijn $search_query - TransferiumOV";
@@ -46,7 +46,7 @@ elseif (new_route("/tov/search", "get")) {
     // include view
     include __DIR__ . "/views/search.php";
 }
-elseif (new_route("/tov/stop", "get")) {
+elseif (new_route("/tov/halte", "get")) {
     // validate
     if (!isset($_GET['sid']) or !is_numeric($_GET['sid'])) {
         http_response_code(400);
@@ -76,7 +76,7 @@ elseif (new_route("/tov/stop", "get")) {
     // include view
     include __DIR__ . "/views/stop.php";
 }
-elseif (new_route("/tov/trip", "get")) {
+elseif (new_route("/tov/rit", "get")) {
     if (!isset($_GET['tid']) or !is_numeric($_GET['tid'])) {
         http_response_code(400);
         echo "400: Er moet een rit-id gegeven worden en deze moet een getal zijn!";
@@ -109,16 +109,16 @@ elseif (new_route("/tov/trip", "get")) {
     $stop_list = get_stop_list($_GET['tid']);
     include __DIR__ . "/views/trip.php";
 }
-elseif (new_route("/tov/route", "get")) {
+elseif (new_route("/tov/lijn", "get")) {
     if (!isset($_GET['rid']) or !is_numeric($_GET['rid'])) {
         http_response_code(400);
-        echo "400: Er moet een route-id gegeven worden en deze moet een getal zijn!";
+        echo "400: Er moet een lijn-id gegeven worden en deze moet een getal zijn!";
         die();
     }
     $route_info = get_route_info($_GET['rid']);
     if (!$route_info) {
         http_response_code(404);
-        echo "404: Deze route bestaat niet!";
+        echo "404: Deze lijn bestaat niet!";
         die();
     } elseif ($route_info['type'] == 2 or $route_info['type'] == 5) {
         http_response_code(501);
