@@ -10,11 +10,16 @@ include __DIR__ . "/../templates/header.php";
         <button id="earlierTripBtn">&lt; Eerder</button>
         <button id="laterTripBtn">Later &gt;</button>
     </p>
-    <p><span id="tl_filter_header">Filters:</span>
-        <input type="checkbox" id="placeholderFilter" name="plfilter">
-        <label for="plfilter">Voorbeeldfilter</label>
+
+    <p id="tl_filter_p"><span id="tl_filter_header">Filters:</span>
+        <input type="checkbox" id="uitstapStops" name="usFilter" checked>
+        <label for="usFilter">Uitstaphaltes</label>
         <button id="filterApplyBtn">Toepassen</button>
         <button id="deleteFilterBtn">Filters wissen</button>
+        <button id="filterHideBtn">X</button>
+    </p>
+    <p id="tl_filter_sh">
+        <button id="filterShowBtn">Filters</button>
     </p>
 </div>
 <div id="tripList">

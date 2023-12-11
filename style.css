@@ -201,6 +201,10 @@ header {
     justify-content: space-between;
 }
 
+#tl_filter_p {
+    display: none;
+}
+
 #tl_controls > p {
     margin: 0 1em;
 }

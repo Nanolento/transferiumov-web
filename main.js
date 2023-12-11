@@ -183,4 +183,12 @@ $(function() {
     if (location.href.includes("trip.htm")) {
         getTripInfo();
     }
+    $("#filterShowBtn").click(function() {
+        $("#tl_filter_p").show();
+        $("#tl_filter_sh").hide();
+    });
+    $("#filterHideBtn").click(function() {
+        $("#tl_filter_p").hide();
+        $("#tl_filter_sh").show();
+    })
 });
