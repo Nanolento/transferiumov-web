@@ -12,6 +12,7 @@ header {
 @media screen and (min-width: 820px) {
     #content {
         padding: 1em;
+        border-radius: 1em;
         background-color: #eee;
         width: 50em;
         margin: 2em auto;
@@ -48,6 +49,7 @@ header {
     background-color: #fff;
     color: black;
     margin: 0.5em;
+    border-radius: 0.8em;
 }
 
 #tripList {
@@ -106,6 +108,10 @@ header {
     justify-content: left;
 }
 
+.tl_top {
+    border-radius: 0.8em;
+}
+
 .tl_bottom > p {
     margin: 0 1em 0 0.2em;
 }
@@ -123,6 +129,7 @@ header {
     max-width: 2.5em;
     text-align: center;
     flex-shrink: 0;
+    border-radius: 0.3em;
 }
 
 .tl_deptime {
@@ -234,6 +241,7 @@ header {
 .sl_table td {
     background-color: white;
     padding: 0.4em;
+    border-radius: 0.25em;
 }
 
 .sl_table td > a {
@@ -267,6 +275,7 @@ header {
 #sl_maplink {
     background-color: white;
     padding: 0.5em 1em;
+    border-radius: 0.7em;
 }
 
 #sl_maplink > a {
@@ -276,6 +285,7 @@ header {
 
 #query {
     padding: 0.5em 0.5em 0.5em 2.2em;
+    border-radius: 0.6em;
     border: none;
     font-size: 1em;
     margin: 0.5em 0.2em;
@@ -288,6 +298,7 @@ header {
 button {
     background-color: white;
     border: none;
+    border-radius: 0.6em;
     color: black;
     font-size: 1em;
     padding: 0.5em 1em;
@@ -311,7 +322,15 @@ button:disabled {
     padding: 0.5em 0.7em;
     background-color: white;
     border: none;
+    border-radius: 0.6em;
     color: black;
     font-size: 1em;
     margin: 0.5em 0.2em;
+}
+
+#betaWarning {
+    background-color: #ffffcc;
+    color: #2f2900;
+    padding: 0.5em;
+    border-radius: 0.3em;
 }
