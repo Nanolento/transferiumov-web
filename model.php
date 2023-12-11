@@ -104,7 +104,7 @@ function get_stop_info($sid) {
  * @param int $sid The stop id to get trips for.
  * @return string HTML for displaying the stop list.
  */
-function get_trip_list($sid) {
+function get_trip_list($sid, $filters) {
     // Get trips from db
     $pdo = connect_db();
     $stmt = $pdo->prepare("SELECT st.stop_headsign, ".
@@ -132,6 +132,10 @@ function get_trip_list($sid) {
             );
         }
         $trip['route'] = $routes[$trip['route_id']];
+        if (isset($filters['us']) and $filters['us']) {
+            // filter out uitstap stops
+            if ($trip['pickup_type'] == 1) continue;
+        }
         array_push($trip_list_exp, $trip);
     }
     // Sort the array so earlier trips come first.
@@ -249,6 +253,8 @@ function html_trip_list($trip_list) {
         }
         if ($trip['pickup_type'] == 1) {
             $tl_str .= "<p class='tl_problem'>Niet instappen</p>";
+        } elseif ($trip['pickup_type'] == 2) {
+            $tl_str .= "<p>Reserveren nodig</p>";
         }
         $tl_str .= "</div></div>";
     }

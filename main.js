@@ -156,6 +156,16 @@ function addTripInfoToStopList(stopTimes, sid) {
     $("#loading").css("display", "none");
 }
 
+
+function applyFilters() {
+    if ($("#uitstapStops").is(":checked")) {
+        location.href += "&us=0";
+    } else if (!$("#uitstapStops").is(":checked")) {
+        location.href += "&us=1";
+    }
+}
+
+
 $(function() {
     $("#deleteFilterBtn").click(function() {
         location.reload();
@@ -190,5 +200,8 @@ $(function() {
     $("#filterHideBtn").click(function() {
         $("#tl_filter_p").hide();
         $("#tl_filter_sh").show();
-    })
+    });
+    $("#filterApplyBtn").click(function() {
+        applyFilters();
+    });
 });

@@ -59,9 +59,19 @@ elseif (new_route("/tov/stop", "get")) {
         echo "404: Deze halte bestaat niet!";
         die();
     }
+
+    $filters = Array();
+
+    // filters
+    if (isset($_GET['us']) and is_numeric($_GET['us'])) {
+        if ($_GET['us'] == 1) {
+            $filters['us'] = true;
+        }
+    }
+
     $page_title = "Halte ".$stop_info['name']." - TransferiumOV";
     // execute
-    $trip_list = get_trip_list($_GET['sid']);
+    $trip_list = get_trip_list($_GET['sid'], $filters);
 
     // include view
     include __DIR__ . "/views/stop.php";
