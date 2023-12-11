@@ -196,7 +196,7 @@ header {
     background-color: #ffffcc;
 }
 
-#tl_controls {
+#tl_controls, #sl_top {
     display: flex;
     justify-content: space-between;
 }
@@ -257,4 +257,61 @@ header {
 
 .rt_stopname {
     width: fit-content;
+}
+
+
+#sl_ritnr {
+    padding: 0.5em 0.2em;
+}
+
+#sl_maplink {
+    background-color: white;
+    padding: 0.5em 1em;
+}
+
+#sl_maplink > a {
+    color: black;
+    text-decoration: none;
+}
+
+#query {
+    padding: 0.5em 0.5em 0.5em 2.2em;
+    border: none;
+    font-size: 1em;
+    margin: 0.5em 0.2em;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAACfElEQVQ4T6WVSWsqURCFq50HDFERXQiCrtwoIVkoIoqY6F9WRHFAcSBkFwJxyCIrcR5w7ngKup+J/foRXoG02nW/Prfq3GpBPAddxPF4pMFgQKPRiNbrNd8xmUxkt9vJ5/Px93+FcAl9e3ujbrdLBoOBNBoNCYLA6/Hc0+lE+/2ePB4P3d3dqXJlaKvVoul0Snq9nhdAMUAIwHU6nfw/chKJxF/BDIXCj48PVijBAoEAOZ1OVoyHvb+/8z3AD4cD3d7e0sPDgyJYOCeIuVyOzGYzK0PNYrGYYvLz8zONx2MGbzYbikQiDP8ZwlmB2O/3SavVsoLHx0fVelUqFc5DnQG8v7+/hjabTXG5XLJKv9/PH7UYDof08vLCane7HWUymWtoqVRiA6Cz2M7NzY0qFHUtFApkNBq5BE9PT1z3yxCKxSL7FNBoNEo2m00VCgH5fF6GptNp2RnSQqFer4t4IuoUDAbJ6/WqQuEE2A+22m63lM1mr7f/+voqfn5+shexjWQyqQoFED1AWCwWLtlV91erlVgul9lSUOtyuSgcDiuC4dVer8d+RrlCoRC53e5rKLrU6XTY4OgokqEApXA4HLxgPp8TDshkMmGg1FjU82eTkC8f07ML5BMDe0G1dEyxED7GB0CUCldYKpVKyUdbbtTlQGk0GjSbzViNNEykREBgJ1zRJNyXhgz6AIspQvEnzI1JhXJIYCyGfzEPcIzxcFwlxXABBgz68m37Sp1BMuJSBX5jN2crXoHj8ThZrdY/NVX1kcLNxWJBtVrtGxh+h+JvQ/q3YPi1Wq3KYJQJDvovKETglYPJheYi+I3x8x31W7XIR+3b7TZ7HIP7CyW3kBK1t0SxAAAAAElFTkSuQmCC);
+    background-position-x: 0.4em;
+    background-position-y: 0.4em;
+    background-repeat: no-repeat;
+}
+
+button {
+    background-color: white;
+    border: none;
+    color: black;
+    font-size: 1em;
+    padding: 0.5em 1em;
+    margin: 0.5em 0.2em;
+    cursor: pointer;
+}
+
+button:disabled {
+    color: #aaa;
+    cursor: default;
+}
+
+#filterHideBtn {
+    margin: 0;
+    padding: 0.6em 0.2em;
+    color: red;
+    font-size: 0.9em;
+}
+
+#searchOption {
+    padding: 0.5em 0.7em;
+    background-color: white;
+    border: none;
+    color: black;
+    font-size: 1em;
+    margin: 0.5em 0.2em;
 }

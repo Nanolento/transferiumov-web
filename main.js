@@ -196,12 +196,28 @@ $(function() {
     $("#filterShowBtn").click(function() {
         $("#tl_filter_p").show();
         $("#tl_filter_sh").hide();
+        $("#tl_timectrl").hide();
+        $("#tl_controls").css("justify-content", "right");
     });
     $("#filterHideBtn").click(function() {
         $("#tl_filter_p").hide();
         $("#tl_filter_sh").show();
+        $("#tl_timectrl").show();
+        $("#tl_controls").css("justify-content", "space-between");
     });
     $("#filterApplyBtn").click(function() {
         applyFilters();
+    });
+    $("#lijnFilter").change(function() {
+        if (this.checked) {
+            lijnNum = parseInt(prompt("Voer het lijnnummer in waarop je wilt filteren."));
+            if (!isNaN(lijnNum)) {
+                $("#lfLabel").text("Lijn " + lijnNum.toString());
+            } else {
+                $("#lijnFilter").prop("checked", false);
+            }
+        } else {
+            $("#lfLabel").text("Lijn");
+        }
     });
 });

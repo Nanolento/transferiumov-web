@@ -3,7 +3,10 @@ include __DIR__ . "/../templates/header.php";
 ?>
 
 <h2 class="tl_header" id="tl_head"><?= $page_header ?></h2>
-<p id="sl_ritnr">Rit <?= $trip_no ?></p>
+<div id="sl_top">
+    <p id="sl_ritnr">Rit <?= $trip_no ?></p>
+    <p id="sl_maplink"><a href="/tov/map?type=trip&tid=<?= $_GET['tid'] ?>">Kaart</a></p>
+</div>
 <div id="stopList">
     <?= $stop_list ?>
 </div>

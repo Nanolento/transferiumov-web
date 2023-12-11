@@ -6,7 +6,7 @@ include __DIR__ . "/../templates/header.php";
 <h2 class="tl_header" id="tl_head"><?= $stop_info['name'] ?></h2>
 
 <div id="tl_controls">
-    <p>
+    <p id="tl_timectrl">
         <button id="earlierTripBtn">&lt; Eerder</button>
         <button id="laterTripBtn">Later &gt;</button>
     </p>
@@ -14,6 +14,8 @@ include __DIR__ . "/../templates/header.php";
     <p id="tl_filter_p"><span id="tl_filter_header">Filters:</span>
         <input type="checkbox" id="uitstapStops" name="usFilter" checked>
         <label for="usFilter">Uitstaphaltes</label>
+        <input type="checkbox" id="lijnFilter" name="lijnFilter">
+        <label id="lfLabel" for="lijnFilter">Lijn</label>
         <button id="filterApplyBtn">Toepassen</button>
         <button id="deleteFilterBtn">Filters wissen</button>
         <button id="filterHideBtn">X</button>
