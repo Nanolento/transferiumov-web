@@ -11,7 +11,6 @@ error_reporting(E_ALL);
  * @param string $route_uri URI to be matched
  * @param string $request_type Request method
  * @return bool
- *
  */
 function new_route($route_uri, $request_type){
     $route_uri_expl = array_filter(explode('/', $route_uri));
@@ -368,19 +367,23 @@ function get_route_table($rid) {
     $pdo = connect_db();
     // get a trip that uses this route that happen today
     $trip_stmt = $pdo->prepare("SELECT t.id FROM Trip t, CalendarDate cd ".
-        "WHERE t.service_id = cd.service_id AND cd.date = ? AND t.route_id = ?;");
+        "WHERE t.service_id = cd.service_id AND t.direction_id = 0 AND cd.date = ? AND t.route_id = ?;");
     $trip_stmt->execute([date("Y-m-d"), $rid]);
     if ($trip_stmt->rowCount() == 0) {
         return false;
     }
     $trips = $trip_stmt->fetchAll();
-    $stop_stmt = $pdo->prepare("SELECT s.id, s.name FROM Stop s, StopTime st WHERE ".
+    $stop_stmt = $pdo->prepare("SELECT s.id, s.name, st.stop_seq FROM Stop s, StopTime st WHERE ".
         "st.stop_id = s.id AND st.trip_id = ?;");
     $stop_stmt->execute([$trips[0]['id']]);
     if ($stop_stmt->rowCount() == 0) {
         return false;
     }
     $stops = $stop_stmt->fetchAll();
+    // Sort the array so earlier stops come first.
+    usort($stops, function($i1, $i2) {
+        return $i1['stop_seq'] <=> $i2['stop_seq'];
+    });
     // obtain trip stop_times
     $trip_times = Array();
     foreach ($trips as $trip) {
@@ -389,6 +392,10 @@ function get_route_table($rid) {
         $stmt->execute([$trip['id']]);
         array_push($trip_times, $stmt->fetchAll());
     }
+    // Sort the array so earlier trips come first.
+    usort($trip_times, function($i1, $i2) {
+        return $i1[0]['depart_time'] <=> $i2[0]['depart_time'];
+    });
     //echo "<td><pre>".json_encode($trip_times, JSON_PRETTY_PRINT)."</pre></td>";
     //return true;
     $table_rows = "";
