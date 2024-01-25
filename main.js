@@ -126,4 +126,23 @@ $(function() {
             $("#lfLabel").text("Lijn");
         }
     });
+    $("#earlierTripBtn").click(function() {
+        let splitTimeStr = $("div.tl_top > .tl_deptime").first().text().split(":");
+        let hrs = parseInt(splitTimeStr[0]);
+        let mins = parseInt(splitTimeStr[1]);
+        let beforeSeconds = hrs * 3600 + mins * 60;
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set("before", beforeSeconds);
+        urlParams.delete("after");
+        location.replace(window.location.pathname + "?" + urlParams.toString());
+    });
+    $("#laterTripBtn").click(function() {
+        let splitTimeStr = $("div.tl_top > .tl_deptime").last().text().split(":");
+        let hrs = parseInt(splitTimeStr[0]);
+        let mins = parseInt(splitTimeStr[1]);
+        let afterSeconds = hrs * 3600 + mins * 60;
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set("after", afterSeconds);
+        location.replace(window.location.pathname + "?" + urlParams.toString());
+    });
 });

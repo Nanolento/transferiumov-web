@@ -68,6 +68,11 @@ elseif (new_route("/halte", "get")) {
             $filters['us'] = true;
         }
     }
+    if (isset($_GET['after']) and is_numeric($_GET['after'])) {
+        $filters['after'] = $_GET['after'];
+    } elseif (isset($_GET['before']) and is_numeric($_GET['before'])) {
+        $filters['before'] = $_GET['before'];
+    }
 
     $page_title = "Halte ".$stop_info['name']." - TransferiumOV";
     // execute

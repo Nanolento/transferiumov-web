@@ -106,6 +106,35 @@ function get_stop_info($sid) {
 function get_trip_list($sid, $filters) {
     // Get trips from db
     $pdo = connect_db();
+    
+    $start_time = date("H:i:s");
+    $end_time = (intval(date("H")) + 3).date(":i:s");
+    if (isset($filters['after'])) {
+        // first turn this number into H:i:s
+        // this number consists of 1 * secs, 60 * mins, 3600 * hrs.
+        $st_total = $filters['after'];
+        $st_hour = floor($st_total / 3600);
+        $st_total -= $st_hour * 3600;
+        $st_min = floor($st_total / 60);
+        $st_total -= $st_min * 60;
+        $st_sec = $st_total; 
+        // now format the start+end times to be like this.
+        $start_time = $st_hour.":".sprintf("%02d", $st_min).":".sprintf("%02d", $st_sec);
+        $end_time = ($st_hour + 3).":".sprintf("%02d", $st_min).":".sprintf("%02d", $st_sec);
+    } elseif (isset($filters['before'])) {
+        // first turn this number into H:i:s
+        // this number consists of 1 * secs, 60 * mins, 3600 * hrs.
+        $st_total = $filters['before'];
+        $st_hour = floor($st_total / 3600);
+        $st_total -= $st_hour * 3600;
+        $st_min = floor($st_total / 60);
+        $st_total -= $st_min * 60;
+        $st_sec = $st_total; 
+        // now format the start+end times to be like this.
+        $start_time = ($st_hour - 3).":".sprintf("%02d", $st_min).":".sprintf("%02d", $st_sec);
+        $end_time = $st_hour.":".sprintf("%02d", $st_min).":".sprintf("%02d", $st_sec);
+    }
+    
     $stmt = $pdo->prepare("SELECT st.stop_headsign, ".
                           "st.depart_time, st.trip_id, st.platform_code, ".
                           "st.pickup_type, ".
@@ -118,8 +147,8 @@ function get_trip_list($sid, $filters) {
                           "cd.date = ? AND st.depart_time > ? AND ".
                           "st.depart_time < ? AND st.stop_id = ?;");
     // Execute this statement but only retrieve trips from now until 3 hours in future
-    $stmt->execute([date("Y-m-d"), date("H:i:s"),
-        (intval(date("H")) + 3).date(":i:s"), $sid]);
+    $stmt->execute([date("Y-m-d"), $start_time,
+        $end_time, $sid]);
     // Add routes to the list
     $trip_list = $stmt->fetchAll();
     $routes = Array();
