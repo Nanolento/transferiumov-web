@@ -54,24 +54,26 @@ function createTimeOut(ms, message) {
 
 
 function applyFilters() {
+    var urlParams = new URLSearchParams(window.location.search);
     if ($("#uitstapStops").is(":checked")) {
-        location.href += "&us=0";
+        urlParams.set("us", 0);
     } else if (!$("#uitstapStops").is(":checked")) {
-        location.href += "&us=1";
+        urlParams.set("us", 1);
     }
+    location.replace(window.location.pathname + "?" + urlParams.toString());
 }
 
 
 $(function() {
     $("#dirSwitchBtn").click(function() {
-        const urlParams = new URLSearchParams(window.location.search);
+        var urlParams = new URLSearchParams(window.location.search);
         const directionParam = urlParams.get("dir");
-        const ritIdParam = urlParams.get("rid");
         if (directionParam == 0) {
-            location.href = "/lijn?rid=" + ritIdParam + "&dir=1";
+            urlParams.set("dir", 1);
         } else {
-            location.href = "/lijn?rid=" + ritIdParam + "&dir=0";
+            urlParams.set("dir", 0);
         }
+        location.href = window.location.pathname + "?" + urlParams.toString();
     });
     $("#deleteFilterBtn").click(function() {
         location.reload();
@@ -88,7 +90,7 @@ $(function() {
     });
 
     if (location.href.includes("search")) {
-        const urlParams = new URLSearchParams(window.location.search);
+        var urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get("type");
         if (searchParam == "route") {
             $("#searchOption").val("route");
@@ -131,7 +133,7 @@ $(function() {
         let hrs = parseInt(splitTimeStr[0]);
         let mins = parseInt(splitTimeStr[1]);
         let beforeSeconds = hrs * 3600 + mins * 60;
-        const urlParams = new URLSearchParams(window.location.search);
+        var urlParams = new URLSearchParams(window.location.search);
         urlParams.set("before", beforeSeconds);
         urlParams.delete("after");
         location.replace(window.location.pathname + "?" + urlParams.toString());
@@ -141,8 +143,9 @@ $(function() {
         let hrs = parseInt(splitTimeStr[0]);
         let mins = parseInt(splitTimeStr[1]);
         let afterSeconds = hrs * 3600 + mins * 60;
-        const urlParams = new URLSearchParams(window.location.search);
+        var urlParams = new URLSearchParams(window.location.search);
         urlParams.set("after", afterSeconds);
+        urlParams.delete("before");
         location.replace(window.location.pathname + "?" + urlParams.toString());
     });
 });
