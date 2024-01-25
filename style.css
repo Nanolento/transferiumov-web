@@ -238,7 +238,7 @@ header {
     text-align: left;
 }
 
-.sl_table td {
+.sl_table td, .rt_table td {
     background-color: white;
     padding: 0.4em;
     border-radius: 0.25em;
@@ -334,3 +334,15 @@ button:disabled {
     padding: 0.5em;
     border-radius: 0.3em;
 }
+
+.rt_table td {
+    text-align: center;
+    min-width: 3.5em;
+}
+
+.rt_stopname {
+    font-weight: bold;
+    text-align: right !important;
+}
+
+

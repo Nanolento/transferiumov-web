@@ -399,9 +399,22 @@ function get_route_table($rid) {
     //echo "<td><pre>".json_encode($trip_times, JSON_PRETTY_PRINT)."</pre></td>";
     //return true;
     $table_rows = "";
+    $prev_place = "";
     foreach ($stops as $stop) {
         // add stop name to table
-        $table_rows .= "<tr><td class='rt_stopname'>".$stop['name']."</td>";
+        if (($pos = strpos($stop['name'], ",")) !== false) {
+            $sname = substr($stop['name'], $pos + 2);
+            $place_name = substr($stop['name'], 0, $pos);
+        } else {
+            $sname = $stop['name'];
+            $place_name = "";
+        }
+        if ($prev_place == $place_name) {
+            $table_rows .= "<tr><td class='rt_stopname'>".$sname."</td>";
+        } else {
+            $table_rows .= "<tr><td class='rt_stopname'>".$place_name.", ".$sname."</td>";
+            $prev_place = $place_name;
+        }
         // now, add stop times to table
         foreach ($trip_times as $tript) {
             foreach ($tript as $ttime) {
