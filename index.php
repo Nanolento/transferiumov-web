@@ -125,14 +125,19 @@ elseif (new_route("/lijn", "get")) {
         echo "501: Sorry, deze pagina werkt niet op trein- of veerbootroutes.";
         die();
     }
-
+    if (!isset($_GET['dir']) or !is_numeric($_GET['dir'])) {
+        $direction_id = 0;
+    } elseif (is_numeric($_GET['dir'])) {
+        $direction_id = $_GET['dir'];
+    }
+    
 
     $page_header = "Lijn ".$route_info['short_name'].": ".$route_info['long_name'];
     $page_title = $page_header . " - TransferiumOV";
 
     // $route_table are the rows in the table
     // the table itself is already defined in the view.
-    $route_table = get_route_table($_GET['rid']);
+    $route_table = get_route_table($_GET['rid'], $direction_id);
     if (!$route_table) {
         http_response_code(500);
         echo "500: Sorry, het is ons helaas niet gelukt de pagina klaar te maken.";

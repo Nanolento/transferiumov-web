@@ -1,7 +1,6 @@
 const siteDomain = "http://127.0.0.1:8080/";
 const apiDomain = "http://127.0.0.1:8000/";
 
-
 const agencyNiceNames = {
     "IFF:EB": "Eurobahn",
     "IFF:VALLEI": "Valleilijn",
@@ -53,109 +52,6 @@ function createTimeOut(ms, message) {
     return timedOutPromise;
 }
 
-function getTripInfo() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const stopIdParam = urlParams.get("sid");
-    const tripIdParam = urlParams.get("tid");
-    const tripId = parseInt(tripIdParam);
-    const stopId = parseInt(stopIdParam);
-    let tripStopList = new Promise(function(resolve, reject) {
-        $.ajax({
-            url: apiDomain + "trip_stoptimes",
-            type: "get",
-            data: { tid: tripId },
-            dataType: "json",
-            success: function(response) {
-                resolve(response);
-            },
-            error: function(req) {
-                reject(new Error(`Laden van ritinformatie is mislukt.`));
-            }
-        });
-    });
-    let timedOutPromise = createTimeOut(45000, `Laden van ritinformatie duurde te lang.`);
-    Promise.race([tripStopList, timedOutPromise]).then(function(response) {
-
-        $.ajax({
-            url: apiDomain + "trip_info",
-            type: "get",
-            data: { tid: tripId },
-            dataType: "json",
-            success: function(resp) {
-                if (resp.route.type != "train")
-                    headText = "Lijn ";
-                else headText = "";
-                headText += resp.route.short_name;
-                headText += " naar " + resp.headsign;
-                document.title = resp.route.short_name + " " + resp.headsign + " - OVbuzz";
-                $("#sl_ritnr").text("Rit " + resp.short_name + ", ");
-                $("#tl_head").text(headText);
-                if (!isNaN(stopId)) {
-                    addTripInfoToStopList(response, stopId);
-                } else {
-                    addTripInfoToStopList(response, 0);
-                }
-            }
-        });
-    }).catch(function(req) {
-        $("#tl_head").text(req.message);
-        $("#tl_head").addClass("warning");
-        $("#loading").css("display", "none");
-    });
-}
-
-
-function addTripInfoToStopList(stopTimes, sid) {
-    $("#sl_ritnr").text($("#sl_ritnr").text() + "stopt bij " + stopTimes.length.toString() + " haltes.");
-    stopTimes.forEach(st => {
-        let stopElem = document.createElement("div");
-        $(stopElem).addClass("sl_box");
-        let stopNameElem = document.createElement("p");
-        let stopLinkElem = document.createElement("a");
-        let stopPlaceName = document.createElement("p");
-        if (st.stop_name.includes(",")) {
-            $(stopLinkElem).text(st.stop_name.split(",")[1].split("(")[0]);
-            $(stopPlaceName).text(st.stop_name.split(",")[0]);
-            $(stopPlaceName).addClass("sl_placename");
-            stopLinkElem.href = siteDomain + "stop.htm?sid=" + st.stop_id;
-            
-        } else {
-            $(stopLinkElem).text(st.stop_name);
-            stopLinkElem.href = siteDomain + "stop.htm?sid=" + st.stop_id;
-        }
-        $(stopNameElem).addClass("sl_name");
-        $(stopNameElem).append(stopLinkElem);
-        let depTimeElem = document.createElement("p");
-        $(depTimeElem).text(st.depart_time.substring(0,5));
-        $(depTimeElem).addClass("sl_deptime");
-        
-        let stopBox = document.createElement("div");
-        let depBox = document.createElement("div");
-        $(stopElem).addClass("sl_box");
-        $(stopBox).addClass("sl_sbox");
-        $(depBox).addClass("sl_dbox");
-        $(depBox).append(depTimeElem);
-        $(stopBox).append(stopNameElem);
-        if (st.stop_name.includes(",")) {
-            $(stopBox).append(stopPlaceName);
-        }
-        let distElem = document.createElement("p");
-        $(distElem).text((st.distance / 1000).toFixed(1) + " km");
-        $(distElem).addClass("sl_dist");
-        $(depBox).append(distElem);
-        $(stopElem).append(depBox);
-        $(stopElem).append(stopBox);
-        
-        if (sid != 0) {
-            if (st.stop_id == sid) {
-                $(stopElem).addClass("sl_selstop");
-            }
-        }
-        $("#stopList").append(stopElem);
-    });
-    $("#loading").css("display", "none");
-}
-
 
 function applyFilters() {
     if ($("#uitstapStops").is(":checked")) {
@@ -167,6 +63,16 @@ function applyFilters() {
 
 
 $(function() {
+    $("#dirSwitchBtn").click(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const directionParam = urlParams.get("dir");
+        const ritIdParam = urlParams.get("rid");
+        if (directionParam == 0) {
+            location.href = "/lijn?rid=" + ritIdParam + "&dir=1";
+        } else {
+            location.href = "/lijn?rid=" + ritIdParam + "&dir=0";
+        }
+    });
     $("#deleteFilterBtn").click(function() {
         location.reload();
     });

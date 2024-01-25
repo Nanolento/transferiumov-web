@@ -363,12 +363,12 @@ function get_routes($query) {
     return $resultsList;
 }
 
-function get_route_table($rid) {
+function get_route_table($rid, $direction_id) {
     $pdo = connect_db();
     // get a trip that uses this route that happen today
     $trip_stmt = $pdo->prepare("SELECT t.id FROM Trip t, CalendarDate cd ".
-        "WHERE t.service_id = cd.service_id AND t.direction_id = 0 AND cd.date = ? AND t.route_id = ?;");
-    $trip_stmt->execute([date("Y-m-d"), $rid]);
+        "WHERE t.service_id = cd.service_id AND t.direction_id = ? AND cd.date = ? AND t.route_id = ?;");
+    $trip_stmt->execute([$direction_id, date("Y-m-d"), $rid]);
     if ($trip_stmt->rowCount() == 0) {
         return false;
     }
