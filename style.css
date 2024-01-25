@@ -5,8 +5,28 @@ body {
 }
 
 header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     padding: 1em 2em;
     background-color: #cfc;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.nav_item {
+    text-decoration: none;
+    color: grey;
+    margin: auto 1em;
+}
+
+.nav_active {
+    color: black;
+    font-weight: bold;
 }
 
 @media screen and (min-width: 820px) {

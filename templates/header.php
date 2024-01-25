@@ -19,8 +19,7 @@
 </head>
 <body>
 <header>
-    <a href="/"><img alt="TransferiumOV logo" title="TransferiumOV" src="logo.png" width=188 height=52 /></a>
-    <span id="betaHeader"><?php if (isset($slogan)) { echo $slogan; } ?></span>
-    <!-- navigation bar goes here -->
+    <a href="/"><img alt="TransferiumOV logo" title="TransferiumOV" src="ovbuzzlogo.png" width=188 height=52 /></a>
+    <nav><?= $navigation ?></nav>
 </header>
 <div id="content">

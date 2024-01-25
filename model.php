@@ -22,6 +22,16 @@ function new_route($route_uri, $request_type){
     }
 }
 
+function get_navigation($template, $active_id) {
+    $navbar_html = "";
+    foreach ($template as $page) {
+        $navbar_html .= "<a class='nav_item";
+        if ($page['id'] == $active_id) $navbar_html .= " nav_active";
+        $navbar_html .= "' href='".$page['dest']."'>".$page['name']."</a>";
+    }
+    return $navbar_html;
+}
+
 /**
  * Connects to the DB, returns the PDO object
  * @return PDO|void PDO if successful, stops execution if not

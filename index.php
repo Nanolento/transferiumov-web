@@ -2,9 +2,36 @@
 
 include 'model.php';
 
-$slogan = "PHP is onderweg!";
+$template = [
+    [
+        "id" => 1,
+        "name" => "Dashboard",
+        "dest" => "/"
+    ],
+    [
+        "id" => 2,
+        "name" => "Favorieten",
+        "dest" => "/favorieten"
+    ],
+    [
+        "id" => 3,
+        "name" => "Kaart",
+        "dest" => "/kaart"
+    ],
+    [
+        "id" => 4,
+        "name" => "Account",
+        "dest" => "/account"
+    ],
+    [
+        "id" => 5,
+        "name" => "Toekomst",
+        "dest" => "/toekomst"
+    ]
+];
 
 if (new_route("/", "get")) {
+    $navigation = get_navigation($template, 1);
     $page_title = "TransferiumOV";
     include __DIR__ . "/views/main.php";
 }
@@ -16,7 +43,7 @@ elseif (new_route("/zoeken", "get")) {
         die();
     }
     $search_query = htmlspecialchars($_GET['query']);
-
+    $navigation = get_navigation($template, 0);
     if ($_GET['type'] != "stop" and $_GET['type'] != "route") {
         http_response_code(400);
         echo "400: Het geselecteerde zoektype bestaat niet!";
@@ -53,6 +80,7 @@ elseif (new_route("/halte", "get")) {
         echo "400: Er moet een halte-id gegeven worden en deze moet een getal zijn!";
         die();
     }
+    $navigation = get_navigation($template, 0);
     $stop_info = get_stop_info($_GET['sid']);
     if (!$stop_info or !isset($stop_info['name'])) {
         http_response_code(404);
@@ -87,6 +115,7 @@ elseif (new_route("/rit", "get")) {
         echo "400: Er moet een rit-id gegeven worden en deze moet een getal zijn!";
         die();
     }
+    $navigation = get_navigation($template, 0);
     $trip_info = get_trip_info($_GET['tid']);
     if (!$trip_info) {
         http_response_code(404);
@@ -120,6 +149,7 @@ elseif (new_route("/lijn", "get")) {
         echo "400: Er moet een lijn-id gegeven worden en deze moet een getal zijn!";
         die();
     }
+    $navigation = get_navigation($template, 0);
     $route_info = get_route_info($_GET['rid']);
     if (!$route_info) {
         http_response_code(404);
@@ -151,8 +181,18 @@ elseif (new_route("/lijn", "get")) {
     include __DIR__ . "/views/route.php";
 }
 elseif (new_route("/toekomst", "get")) {
+    $navigation = get_navigation($template, 5);
     $page_title = "De toekomst van TransferiumOV";
     include __DIR__ . "/views/future.php";
+}
+elseif (new_route("/kaart", "get")) {
+    echo "Dit is een toekomstige functie. Keer later terug!";
+}
+elseif (new_route("/favorieten", "get")) {
+    echo "Dit is een toekomstige functie. Keer later terug!";
+}
+elseif (new_route("/account", "get")) {
+    echo "Dit is een toekomstige functie. Keer later terug!";
 }
 else {
     http_response_code(404);
