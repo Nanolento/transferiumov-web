@@ -16,11 +16,11 @@ include __DIR__ . "/../templates/header.php";
     super gemakkelijk je reis kunt plannen.<br><br>
     TransferiumOV is nu al beschikbaar om je kennis te laten maken met deze website.
     Langzamerhand zullen er meer functies toegevoegd worden om het compleet te maken.
-    <a href="/tov/toekomst">Kijk hier wat er nog aan komt</a></p>
+    <a href="/toekomst">Kijk hier wat er nog aan komt</a></p>
 <noscript>Sommige functionaliteiten van TransferiumOV kunnen mogelijk niet werken
 als je browser JavaScript niet ondersteunt of niet aan heeft staan.<br></noscript>
 
-<form action="/tov/zoeken" method="get">
+<form action="/zoeken" method="get">
     <select id="searchOption" name="type">
         <option value="stop" selected>Halte/station</option>
         <option value="route">Lijn</option>

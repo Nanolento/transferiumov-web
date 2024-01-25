@@ -36,7 +36,7 @@ function connect_db() {
     ];
     try {
         // Please specify your username and password here.
-        $pdo = new PDO($dsn, "jelmer", "1234", $options);
+        $pdo = new PDO($dsn, "ovb", "1234", $options);
         return $pdo;
     } catch (PDOException $e) {
         sprintf("Failed to connect. %s", $e->getMessage());
@@ -225,7 +225,7 @@ function html_trip_list($trip_list) {
             $type_str = $route_types[$trip['route']['type']];
         }
         // create link
-        $dest_link = "/tov/rit?tid=".$trip['trip_id'];
+        $dest_link = "/rit?tid=".$trip['trip_id'];
         // color elems
         if (isset($trip['route']['fgcolor']) and isset($trip['route']['bgcolor'])
             and $trip['route']['fgcolor'] != "NULL" and $trip['route']['bgcolor'] != "NULL") {
@@ -341,7 +341,7 @@ function html_stop_list($stop_list) {
             $place_name = "";
         }
         $sl_str .= "<tr><td class='sl_time'>".$arrival_time."</td><td class='sl_time'>".$depart_time."</td><td>".
-        "<a href='/tov/halte?sid=".$stop['stop_id']."'>".$sname."</a></td><td>".$place_name."</td></tr>";
+        "<a href='/halte?sid=".$stop['stop_id']."'>".$sname."</a></td><td>".$place_name."</td></tr>";
     }
     $sl_str .= "</table>";
     return $sl_str;

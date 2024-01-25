@@ -4,11 +4,11 @@ include 'model.php';
 
 $slogan = "PHP is onderweg!";
 
-if (new_route("/tov/", "get")) {
+if (new_route("/", "get")) {
     $page_title = "TransferiumOV";
     include __DIR__ . "/views/main.php";
 }
-elseif (new_route("/tov/zoeken", "get")) {
+elseif (new_route("/zoeken", "get")) {
     // validate
     if (!isset($_GET['type']) or !isset($_GET['query'])) {
         http_response_code(400);
@@ -46,7 +46,7 @@ elseif (new_route("/tov/zoeken", "get")) {
     // include view
     include __DIR__ . "/views/search.php";
 }
-elseif (new_route("/tov/halte", "get")) {
+elseif (new_route("/halte", "get")) {
     // validate
     if (!isset($_GET['sid']) or !is_numeric($_GET['sid'])) {
         http_response_code(400);
@@ -76,7 +76,7 @@ elseif (new_route("/tov/halte", "get")) {
     // include view
     include __DIR__ . "/views/stop.php";
 }
-elseif (new_route("/tov/rit", "get")) {
+elseif (new_route("/rit", "get")) {
     if (!isset($_GET['tid']) or !is_numeric($_GET['tid'])) {
         http_response_code(400);
         echo "400: Er moet een rit-id gegeven worden en deze moet een getal zijn!";
@@ -109,7 +109,7 @@ elseif (new_route("/tov/rit", "get")) {
     $stop_list = get_stop_list($_GET['tid']);
     include __DIR__ . "/views/trip.php";
 }
-elseif (new_route("/tov/lijn", "get")) {
+elseif (new_route("/lijn", "get")) {
     if (!isset($_GET['rid']) or !is_numeric($_GET['rid'])) {
         http_response_code(400);
         echo "400: Er moet een lijn-id gegeven worden en deze moet een getal zijn!";
@@ -140,7 +140,7 @@ elseif (new_route("/tov/lijn", "get")) {
     }
     include __DIR__ . "/views/route.php";
 }
-elseif (new_route("/tov/toekomst", "get")) {
+elseif (new_route("/toekomst", "get")) {
     $page_title = "De toekomst van TransferiumOV";
     include __DIR__ . "/views/future.php";
 }
