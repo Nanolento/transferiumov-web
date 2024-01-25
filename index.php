@@ -36,7 +36,7 @@ elseif (new_route("/zoeken", "get")) {
         // execute
         $search_results = get_search_results($search_query);
         if (is_numeric($search_results)) {
-            redirect("/tov/halte?sid=" . $search_results);
+            redirect("/halte?sid=" . $search_results);
         }
     } else {
         $page_title = "Zoekresultaten: Lijn $search_query - TransferiumOV";
