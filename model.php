@@ -117,8 +117,8 @@ function get_trip_list($sid, $filters) {
     // Get trips from db
     $pdo = connect_db();
     
-    $start_time = date("H:i:s");
-    $end_time = (intval(date("H")) + 3).date(":i:s");
+    $start_time = (intval(date("H")) + 1).date(":i:s");
+    $end_time = (intval(date("H")) + 4).date(":i:s");
     if (isset($filters['after'])) {
         // first turn this number into H:i:s
         // this number consists of 1 * secs, 60 * mins, 3600 * hrs.

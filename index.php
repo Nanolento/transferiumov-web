@@ -125,8 +125,8 @@ elseif (new_route("/rit", "get")) {
     $route_info = get_route_info($trip_info['route_id']);
     // page header
     if ($route_info['bgcolor'] != "NULL" and $route_info['fgcolor'] != "NULL") {
-        $page_header = "<span style='background-color: #" . $route_info['bgcolor'] . ";color: #" .
-            $route_info['fgcolor'] . ";'>Lijn ".$route_info['short_name']."</span> naar ".$trip_info['headsign'];
+        $page_header = "Lijn <span class='sl_routename' style='background-color: #" . $route_info['bgcolor'] . ";color: #" .
+            $route_info['fgcolor'] . ";'>".$route_info['short_name']."</span> naar ".$trip_info['headsign'];
     } else {
         if ($route_info['type'] != 2 and $route_info['type'] != 4) {
             $page_header = "Lijn ";
