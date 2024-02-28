@@ -19,7 +19,7 @@
 </head>
 <body>
 <header>
-    <a href="/"><img alt="TransferiumOV logo" title="TransferiumOV" src="ovbuzzlogo.png" width=188 height=52 /></a>
+    <a href="/"><span style="color: black; font-weight: bold; font-size: 1.5em;">TransferiumOV</span></a>
     <nav><?= $navigation ?></nav>
 </header>
 <div id="content">

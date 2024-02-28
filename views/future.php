@@ -8,6 +8,12 @@ include __DIR__ . "/../templates/header.php";
 <p>TransferiumOV is in béta. Dit betekent dat niet alle functies zijn toegevoegd en
 niet alle functies die er al zijn helemaal goed functioneren. Op deze pagina vind je
 alles wat nog gaat worden toegevoegd aan TransferiumOV (volgens plan).</p>
+<p id="betaWarning"><b>De plannen zijn veranderd.</b>
+De plannen die hieronder te lezen zijn waren de plannen in januari 2024.
+Deze plannen zijn verouderd, aangezien TransferiumOV een ov-dashboard gaat worden
+i.p.v. een reisplanner/dienstregeling-site. Dat kan de nieuwe TransferiumOV wel,
+maar de plannen hier kunnen afwijken van de daadwerkelijke plannen.</p>
+
 <p>Hierondergenoemde 'huidige functies' zijn de functies die vanaf januari 2024 beschikbaar zijn.
 De toekomstige functies zullen beschikbaar worden zodra ze klaar zijn. Deze pagina zal dan tevens
 fungeren als changelog.</p>

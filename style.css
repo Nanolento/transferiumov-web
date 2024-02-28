@@ -52,6 +52,9 @@ nav {
     .tl_destname {
         font-size: 0.87em;
     }
+    nav {
+	display: none;
+    }
 }
 
 #disclaimer {
