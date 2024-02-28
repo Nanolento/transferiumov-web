@@ -180,6 +180,12 @@ function get_trip_list($sid, $filters) {
     usort($trip_list_exp, function($i1, $i2) {
         return $i1['depart_time'] <=> $i2['depart_time'];
     });
+    
+    // make times later than 23:59 appear as 00:00 instead of 24:00 etc.
+    foreach ($trip_list_exp as &$trip) {
+        $trip['depart_time'] = mod_deptime_hours($trip['depart_time']);
+    }
+    
     // Convert the trip list array to a nice HTML view
     // equivalent to addStopTimesToTripList in main.js
     // return it because that is what we want
@@ -352,6 +358,15 @@ function get_stop_list($tid) {
     } else return "";
 }
 
+function mod_deptime_hours($str) {
+    // keep hour in range in 24hrs
+    $num = intval(substr($str, 0, 2));
+    $num %= 24;
+    $newString = str_pad($num, 2, '0', STR_PAD_LEFT);
+    $newString .= substr($str, 2);
+    return $newString;
+}
+
 /**
  * Generates HTML for displaying a stop list.
  * Used by get_stop_list().
@@ -368,6 +383,12 @@ function html_stop_list($stop_list) {
         } else {
             $depart_time = substr($stop['depart_time'], 0, 5);
             $arrival_time = substr($stop['arrival_time'], 0, 5);
+        }
+        
+        // keep in range of 24hrs
+        $depart_time = mod_deptime_hours($depart_time);
+        if ($arrival_time != "") {
+            $arrival_time = mod_deptime_hours($arrival_time);
         }
 
         // stop name
