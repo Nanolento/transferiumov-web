@@ -25,8 +25,8 @@ $template = [
     ],
     [
         "id" => 5,
-        "name" => "Toekomst",
-        "dest" => "/toekomst"
+        "name" => "Over",
+        "dest" => "/over"
     ]
 ];
 
@@ -180,9 +180,9 @@ elseif (new_route("/lijn", "get")) {
     }
     include __DIR__ . "/views/route.php";
 }
-elseif (new_route("/toekomst", "get")) {
+elseif (new_route("/over", "get")) {
     $navigation = get_navigation($template, 5);
-    $page_title = "De toekomst van TransferiumOV";
+    $page_title = "Over TransferiumOV";
     include __DIR__ . "/views/future.php";
 }
 elseif (new_route("/kaart", "get")) {
