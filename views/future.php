@@ -8,17 +8,18 @@ include __DIR__ . "/../templates/header.php";
 Je kunt je reis plannen, dienstregelingen zien en statistieken bekijken.
 Er zal informatie komen over de voertuigen, omlopen, lijnen en bijbehorende statistieken 
 zullen ook beschikbaar zijn.</p>
-<p id="betaWarning"><b>TransferiumOV is in béta.</b> Er zullen nog veel
+<p id="betaWarning"><b>TransferiumOV is in pre-alpha.</b> De site is vroegtijdig gelanceerd.
+Er zullen nog veel
 dingen veranderen op deze site en veel van de functies die genoemd zijn zijn
 er nog niet. Zie de toekomstsectie hieronder voor wat de plannen zijn.</p>
 
 <h1>Changelog</h1>
-<h2>Beta 2</h2>
-<p><ul>
-    <li>Bug met nachtritten opgelost, 01:00 verschijnt nu als 01:00 i.p.v. 25:00</li>
-</ul></p>
+<h2>Pre-Alpha 2 - <i>28-02-2024</i></h2>
+<p>Bug met nachtritten opgelost, 01:00 verschijnt nu als 01:00 i.p.v. 25:00</p>
+<h2>Pre-Alpha 1 - <i>28-02-2024</i></h2>
+<p>Initiële lancering TransferiumOV.</p>
 <h1>De toekomst van TransferiumOV</h1>
-<p>TransferiumOV is in béta. Dit betekent dat niet alle functies zijn toegevoegd en
+<p>TransferiumOV is in pre-alpha. Dit betekent dat niet alle functies zijn toegevoegd en
 niet alle functies die er al zijn helemaal goed functioneren. Op deze pagina vind je
 alles wat nog gaat worden toegevoegd aan TransferiumOV (volgens plan).</p>
 <p>Hierondergenoemde 'huidige functies' zijn de functies die vanaf januari 2024 beschikbaar zijn.

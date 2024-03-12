@@ -27,6 +27,11 @@ $template = [
         "id" => 5,
         "name" => "Over",
         "dest" => "/over"
+    ],
+    [
+        "id" => 6,
+        "name" => "Feedback",
+        "dest" => "/feedback"
     ]
 ];
 
@@ -184,6 +189,10 @@ elseif (new_route("/over", "get")) {
     $navigation = get_navigation($template, 5);
     $page_title = "Over TransferiumOV";
     include __DIR__ . "/views/future.php";
+} elseif (new_route("/feedback", "get")) {
+    $navigation = get_navigation($template, 6);
+    $page_title = "Laat jouw feedback achter! - TransferiumOV";
+    include __DIR__ . "/views/feedback.php";
 }
 elseif (new_route("/kaart", "get")) {
     echo "Dit is een toekomstige functie. Keer later terug!";

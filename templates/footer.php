@@ -2,7 +2,7 @@
     de Benelux.<br>TransferiumOV stelt slechts een website beschikbaar waarop de dienstregelingen
     van de Nederlandse openbaar vervoerders te zien zijn.<br>TransferiumOV maakt gebruik van GTFS data
     van, maar is niet geassocieerd met OVapi B.V.<br><br>
-<b>TransferiumOV</b> Beta 2</p>
+<b>TransferiumOV</b> Pre-Alpha 2 (vroegtijdige toegang)</p>
 </div>
 
 </body>
